@@ -42,6 +42,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
+.ipynb_checkpoints
 
 # Translations
 *.mo
@@ -55,3 +56,11 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# C++
+*.o
+bin/
+calculate_site_conservation
+fimo_2_sites
+extract_sequence_chunks_near_sites
+
