@@ -60,7 +60,4 @@ target/
 # C++
 *.o
 bin/
-calculate_site_conservation
-fimo_2_sites
-extract_sequence_chunks_near_sites
-
+static/jobs
