@@ -1,5 +1,6 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, Text
+from sqlalchemy import Column, String, DateTime, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
 import json
 
@@ -9,13 +10,16 @@ class Job(Base):
     job_id => Folder name where jobs are run
     """
     __tablename__ = 'job'
+    job_id = Column(String(80), primary_key=True, unique=True)
     async_id = Column(String(80), primary_key=True)
-    job_id = Column(String(80), primary_key=True)
     filename = Column(String(200))
     job_metadata = Column(Text)
     created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
-    completed_at = Column(DateTime(timezone=True), onupdate=datetime.datetime.now)
+    last_updated_at = Column(DateTime(timezone=True), onupdate=datetime.datetime.now)
     status = Column(String(40), default='pending')
+    exception_log = Column(String(200), default=None)
+    encodejob = relationship('EncodeData', backref='job', uselist=False, lazy='select')
+    client_ip = Column(String(20))
 
     def __init__(self, async_id=None, job_id=None, filename=None, job_metadata=None):
         self.async_id = async_id
@@ -30,25 +34,15 @@ class EncodeData(Base):
     __tablename__ = 'encodedata'
     peakfile_id = Column(String(40), primary_key=True)
     dataset_id = Column(String(40))
-    created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
-    file_metadata = Column(Text)
+    run_job_id = Column(String(80), ForeignKey('job.job_id'))
+    encode_metadata = Column(Text)
 
-
-    def __init__(self, peakfile_id=None, dataset_id=None, file_metadata=None):
+    def __init__(self, peakfile_id=None, dataset_id=None, job_id=None, encode_metadata=None):
         self.peakfile_id = peakfile_id
         self.dataset_id = dataset_id
-        self.file_metadata = json.dumps(file_metadata)
+        self.job_id = job_id
+        self.encode_metadata = json.dumps(encode_metadata)
 
     def __repr__(self):
         return '<Peakfile {}>'.format(self.peakfile_id)
-
-class Tracker(Base):
-    __tablename__ = 'tracker'
-    job_id = Column(String(80), primary_key=True)
-    client_ip = Column(String(80))
-
-    def __init__(self, job_id=None, client_ip=None):
-        self.job_id = job_id
-        self.client_ip = client_ip
-
 
