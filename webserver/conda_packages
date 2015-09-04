@@ -9,6 +9,7 @@ biopython=1.65=np19py27_0
 celery=3.1.9=py27_0
 clyent=0.4.0=py27_0
 flask=0.10.1=py27_1
+flask-sqlalchemy=2.0=py27_0
 freetype=2.5.2=2
 itsdangerous=0.24=py27_0
 jinja2=2.8=py27_0
@@ -32,6 +33,7 @@ readline=6.2=2
 requests=2.7.0=py27_0
 setuptools=18.1=py27_0
 six=1.9.0=py27_0
+sqlalchemy=1.0.8=py27_0
 sqlite=3.8.4.1=1
 system=5.8=2
 tk=8.5.18=0
