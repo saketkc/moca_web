@@ -11,7 +11,7 @@ class Job(Base):
     """
     __tablename__ = 'job'
     job_id = Column(String(80), primary_key=True, unique=True)
-    async_id = Column(String(80), primary_key=True)
+    async_id = Column(String(80), primary_key=True, unique=True)
     filename = Column(String(200))
     job_metadata = Column(Text)
     created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
