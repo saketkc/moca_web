@@ -24,7 +24,9 @@ def convert_to_scorefile(filepath, filetype=None, out_file=None):
     if filetype == 'questPeak':
         ## simply copy to peaks.tsvi
         assert out_file is not None
-        shutil.copy(filepath, out_file)
+        if filepath!=out_file:
+            # Copy only ifthey do not have samename
+            shutil.copy(filepath, out_file)
         return True
 
     df = pandas.read_table(filepath, header=None)

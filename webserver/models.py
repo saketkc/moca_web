@@ -17,14 +17,15 @@ class Job(Base):
     created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
     last_updated_at = Column(DateTime(timezone=True), onupdate=datetime.datetime.now)
     status = Column(String(40), default='pending')
-    exception_log = Column(String(200), default=None)
+    exception_log = Column(Text, default=None)
     encodejob = relationship('EncodeData', backref='job', uselist=False, lazy='select')
     client_ip = Column(String(20))
 
-    def __init__(self, async_id=None, job_id=None, filename=None, job_metadata=None):
+    def __init__(self, async_id=None, job_id=None, filename=None, client_ip=None, job_metadata=None):
         self.async_id = async_id
         self.job_id = job_id
         self.filename = filename
+        self.client_ip = client_ip
         self.job_metadata = json.dumps(job_metadata)
 
     def __repr__(self):

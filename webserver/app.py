@@ -12,9 +12,10 @@ from config_processor import read_config
 from encode_peak_file_downloader import get_encode_peakfiles, get_metadata_for_peakfile
 import subprocess
 from bed_operations.format_peakfile import convert_to_scorefile
-from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, insert_job_tracking
+from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists
 from database import SqlAlchemyTask
 import operator
+
 
 server_config = read_config('Server')
 path_config = read_config('StaticPaths')
@@ -29,6 +30,7 @@ app.config['CELERY_IMPORTS'] = ('app',)
 app.config['CELERYD_TASK_TIME_LIMIT'] = 1000000
 app.url_map.strict_slashes = False
 
+
 db = SQLAlchemy(app)
 celery = Celery('app', broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
@@ -42,11 +44,56 @@ param_config = read_config('Parameters')
 
 N_MEME_MOTIFS = int(param_config['n_meme_motifs'])
 
-class SubmitJob(object):
-    def __init__(self):
-        self.job_id = str(uuid4())
-        self.error = 'No'
+def get_unique_job_id():
+    return str(uuid4())
 
+def get_client_ip(request):
+    client_ip = str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
+    return client_ip
+
+class ProcessJob(object):
+    def __init__(self,request, metadata):
+        self.job_id = get_unique_job_id()
+        self.job_folder = os.path.join(UPLOAD_FOLDER, self.job_id)
+        self.file = request.files['file']
+        self.filename = str(self.file.filename)
+        assert self.filename!=''
+        self.user_filepath = os.path.join(self.job_folder, self.filename)
+        self.metadata = metadata
+        self.client_ip = get_client_ip(request)
+        self.genome = None
+        self.async_id = None
+        if metadata is None:
+            self.genome = request.form['genome']
+
+    def submit(self):
+        try:
+            os.makedirs(self.job_folder)
+        except:
+            # Error saving files
+            raise RuntimeError('Error creating job directory')
+
+        if self.metadata is None:
+            self.file.save(self.user_filepath)
+            peak_filepath = os.path.join(self.job_folder, 'peaks.tsv')
+            convert_to_scorefile(self.user_filepath, filetype=None, out_file=peak_filepath)
+        else:
+            self.genome = self.metadata['assembly']
+            href = self.metadata['href']
+            file_type = self.metadata['output_type']
+            filepath = os.path.join(self.job_folder, href.split('/')[-1])
+            retcode = subprocess.call(['wget', '-c', href, '-P', self.job_folder])
+            if int(retcode)!=0:
+                raise RuntimeError('Error downloading peak file from Encode')
+            retcode = subprocess.call(['gunzip', filepath])
+            if int(retcode)!=0:
+                raise RuntimeError('Error extracting zip archive')
+            convert_to_scorefile(filepath, file_type)
+
+
+        data = {'job_id': self.job_id, 'genome': self.genome}
+        self.async_id = run_job.apply_async([data], )
+        insert_new_job(self.job_id, self.async_id, self.filename, self.client_ip)
 
 @celery.task(bind=True)
 def run_motif_analysis_job(self, data):
@@ -61,11 +108,20 @@ def run_motif_analysis_job(self, data):
 def run_job(self, data):
     job_id = data['job_id']
     genome = data['genome']
-    result = run_analysis(job_id, genome)
-    if result == 'success':
-        update_job_status(job_id, 'success')
-    else:
-        update_job_status(job_id, 'failure')
+    try:
+        run_analysis(job_id, genome)
+        exception_log = None
+        result ='success'
+    except RuntimeError as e:
+        result ='failure'
+        args = e.args
+        print 'LENGTH: {}'.format(len(args))
+        for x in args:
+            print x
+        print args[1][1]
+        exception_log = {'message': args[0], 'stdout': args[1][1], 'stderr': args[1][2]}
+        exception_log = json.dumps(exception_log)
+    update_job_status(job_id, result, exception_log)
 
 
 @celery.task(bind=True, base=SqlAlchemyTask)
@@ -103,39 +159,16 @@ workflow = (run_motif_analysis_job.s() | group(run_conservation_analysis_job.s(m
 @app.route('/', methods=['GET', 'POST'])
 def upload_file(metadata=None):
     if request.method == 'POST':
-        job = SubmitJob()
-        job_id = job.job_id
-        ## Create directory to run job
-        job_folder = os.path.join(UPLOAD_FOLDER, job_id)
-        os.makedirs(job_folder)
+        job = ProcessJob(request,metadata)
+        try:
+            job.submit()
+        except RuntimeError as e:
+            print e
+            return str(e)
         if metadata is None:
-            file = request.files['file']
-            ## Hard code all incoming files to peaks.tsv
-            filename = file.filename
-            user_filepath = os.path.join(job_folder, filename)
-            file.save(user_filepath)
-            peak_filepath = os.path.join(job_folder, 'peaks.tsv')
-            convert_to_scorefile(user_filepath, filetype=None, out_file=peak_filepath)
-            genome = request.form['genome']
+            return redirect(url_for('results', job_id=job.job_id))
         else:
-            href = metadata['href']
-            file_type = metadata['output_type']
-            filepath = os.path.join(job_folder, href.split('/')[-1])
-            subprocess.call(["wget", "-c", href, "-P", job_folder])
-            subprocess.call(["gunzip", filepath])
-            convert_to_scorefile(filepath, file_type)
-            genome = metadata['assembly']
-
-
-        data = {'job_id': job_id, 'genome': genome}
-        async_id = run_job.apply_async([data], )
-        #group_id = workflow.apply_async([data])
-        #async_id = group_id.id
-        #async_id = run_motif_analysis_job.apply_async([data], link=parallel_conservation_analysis.s())
-        insert_new_job(async_id, job_id, str(file.filename))
-        client_ip = str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
-        insert_job_tracking(job_id, client_ip)
-        return redirect(url_for('results', job_id=job_id))
+            return job
     elif request.method == 'GET':
         return render_template('index.html')
 
@@ -168,18 +201,26 @@ def read_summary(job_id):
 
 @app.route('/status/<job_id>')
 def job_status(job_id):
+    is_job_in_db =job_exists(job_id)
+    if not is_job_in_db:
+        return jsonify(status='failure', message='Unable to locate job')
+
     async_id = get_async_id(job_id)
     dataset_id = request.args.get('dataset_id')
     peakfile_id = request.args.get('peakfile_id')
+    job_db = get_job_status(job_id)
+    status =job_db['status']
     if dataset_id:
         job = run_encode_job.AsyncResult(async_id)
     else:
         job = run_job.AsyncResult(async_id)
     #job = workflow.AsyncResult(async_id)
     #job = run_motif_analysis_job.AsyncResult(async_id)
-    if job.state == 'PENDING':
+    print 'JOB STATE: {}'.format(job.state)
+
+    if status == 'pending':
         return json.dumps({'status': 'pending', 'job_id':job_id})
-    else:
+    elif status == 'SUCCESS':
         #post_process(async_id, job_id)
         images = ['motif{}Combined_plots.png'.format(i) for i in range(1, N_MEME_MOTIFS+1)]
         if dataset_id:
@@ -198,22 +239,15 @@ def job_status(job_id):
             sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
             images = ['/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
             metadata = {'filename': get_filename(async_id)}
-        print metadata
-        """
-        return json.dumps({'status': job.status,
-                           'job_id':job_id,
-                           'motifs':images,
-                           'motif_occurrences': summary['motif_occurrences'],
-                           'metadata': metadata,
-                           'peaks': summary['peaks'] })
-
-        """
         return jsonify(status=job.status,
                        job_id=job_id,
                        motifs=images,
                        motif_occurrences=dict(sorted_mo),
                        metadata=metadata,
                        peaks=summary['peaks'])
+    else:
+        exception_log = job_db['exception_log']
+        return jsonify(status=status, message=json.loads(exception_log))
 @app.route('/results/<job_id>')
 def results(job_id):
     async_id = get_async_id(job_id)
@@ -253,27 +287,8 @@ def encodejobs(dataset_id, peakfile_id):
     metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
     if type(metadata) == 'dict' and 'status' in metadata.keys():
         return json.dumps({'status': 'error', 'response': metadata})
-    job = SubmitJob()
-    job_id = job.job_id
-    ## Create directory to run job
-    job_folder = os.path.join(UPLOAD_FOLDER, job_id)
-    if not os.path.exists(job_folder):
-        os.makedirs(job_folder)
-    href = metadata['href']
-    file_type = metadata['file_type']
-    filepath = os.path.join(job_folder, href.split('/')[-1])
-    subprocess.call(["wget", "-c", href, "-P", job_folder])
-    subprocess.call(["gunzip", filepath])
-    convert_to_scorefile(filepath.replace('.gz',''), file_type)
-    genome = metadata['assembly']
-
-
-    data = {'job_id': job_id, 'genome': genome, 'dataset_id': dataset_id, 'peakfile_id': peakfile_id, 'metadata': metadata}
-    async_id = run_encode_job.apply_async([data], )
-    insert_new_job(async_id, job_id)
-    client_ip = str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
-    insert_job_tracking(job_id, client_ip)
-    return render_template('encoderesults.html', job_id=job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+    job = upload_file(metadata)
+    return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
 
 
 

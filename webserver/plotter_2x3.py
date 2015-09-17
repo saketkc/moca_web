@@ -3,6 +3,8 @@
 Generate conservation plots
 """
 from __future__ import division
+import matplotlib
+matplotlib.use('Agg')
 import argparse
 import csv
 import sys
@@ -18,7 +20,6 @@ from math import log
 import matplotlib.gridspec as gridspec
 from pylab import setp
 from scipy.stats import binom
-#from fimo_sites_intersect import fimo_sites_intersect
 flankingstemcolor='y'
 
 ENRICHMENT_SEQ_LENGTH = 401
@@ -27,8 +28,6 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='monospace')
 plt.rcParams.update({'axes.titlesize': 'small'})
 plt.rcParams.update({'backend' : 'Agg'})
-import matplotlib
-matplotlib.use('Agg')
 a=39.33333333
 __scale__ = 1#0.51#2.5
 # Use 'pssm' or 'counts' to score:
@@ -337,284 +336,291 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
 
     y_phylop_pixels = [__scale__*x for x in sample_phylo_scores]#[fs:-fs]]#[flanking_sites:-flanking_sites]]
 
-    logo = plt.imread(os.path.join(meme_dir, 'logo{}.png'.format(motif_number)))
-    height_px = logo.shape[0] # Should be 212
 
-    if sample_gerp_data:
-        total_px = X[-1]+6*height_px+140
-        right = (6*height_px+10+140-0.2*height_px)/total_px
-    else:
-        total_px = X[-1]+4*height_px+140
-        right = (4*height_px+10+140-0.2*height_px)/total_px
+    ##FIXME This is a big dirty hacl to get thegenerate plots for the Reverse complement logo too
+    logo_name =['logo{}.png'.format(motif_number), 'logo_rc{}.png'.format(motif_number)]
+    for ln in logo_name:
+        logo = plt.imread(os.path.join(meme_dir, ln))
+        height_px = logo.shape[0] # Should be 212
 
-    figsize=(total_px/100,(2*height_px)/100+0.6)
+        if sample_gerp_data:
+            total_px = X[-1]+6*height_px+140
+            right = (6*height_px+10+140-0.2*height_px)/total_px
+        else:
+            total_px = X[-1]+4*height_px+140
+            right = (4*height_px+10+140-0.2*height_px)/total_px
 
-    gs =  gridspec.GridSpec(2, 1)#, width_ratios=[1, right], height_ratios=[1,1])
-    gs.update(top=1.0, bottom=0.14, left=0.08, right=1-right)#, right=0.8)#, left=0.06)#, right=right, wspace=0.025, hspace=0.03, wd)
-    f = plt.figure(figsize=figsize, dpi=dpi, facecolor='w', edgecolor='k')
+        figsize=(total_px/100,(2*height_px)/100+0.6)
 
-    # ax => Logo
-    # stem_plot => Trend
-    # gerp_scatter_plot => Phylop
-    # enrichment_plot => Gerp
-    logo_plot = plt.Subplot(f, gs[0])
-    ##TODO Check this
-    if motif_length>45:
-        XSCALE_FACTOR = motif_length/1.9
-        z=2
-    elif motif_length>40:
-        XSCALE_FACTOR = motif_length/2.25
-        z=2.5
-    elif motif_length>36:
-        XSCALE_FACTOR = motif_length/1.95
-        z=2
-    elif motif_length>21:
-        XSCALE_FACTOR = motif_length/5
-        z=3
-    else:
-        XSCALE_FACTOR = 4.5
-        z=3
+        gs =  gridspec.GridSpec(2, 1)#, width_ratios=[1, right], height_ratios=[1,1])
+        gs.update(top=1.0, bottom=0.14, left=0.08, right=1-right)#, right=0.8)#, left=0.06)#, right=right, wspace=0.025, hspace=0.03, wd)
+        f = plt.figure(figsize=figsize, dpi=dpi, facecolor='w', edgecolor='k')
 
-    logo_plot.imshow(logo, extent=[40+15+z*(a+1.9),logo.shape[1]+15+XSCALE_FACTOR*(a+1.9),0,logo.shape[0]])
-    logo_plot.set_axis_off()
-    f.add_subplot(logo_plot)
+        # ax => Logo
+        # stem_plot => Trend
+        # gerp_scatter_plot => Phylop
+        # enrichment_plot => Gerp
+        logo_plot = plt.Subplot(f, gs[0])
+        ##TODO Check this
+        if motif_length>45:
+            XSCALE_FACTOR = motif_length/1.9
+            z=2
+        elif motif_length>40:
+            XSCALE_FACTOR = motif_length/2.25
+            z=2.5
+        elif motif_length>36:
+            XSCALE_FACTOR = motif_length/1.95
+            z=2
+        elif motif_length>21:
+            XSCALE_FACTOR = motif_length/5
+            z=3
+        else:
+            XSCALE_FACTOR = 4.5
+            z=3
 
-    stem_plot = plt.Subplot(f, gs[1], sharex=logo_plot)
-    markerline, stemlines, baseline  = stem_plot.stem(X[:fs], [y for y in y_phylop_pixels[:fs]], markerfmt="_", linefmt="-", markerfacecolor=flankingstemcolor, color=greycolor)
-    setp(stemlines, 'color', flankingstemcolor)
-    setp(markerline, 'markerfacecolor', flankingstemcolor)
-    setp(markerline, 'color', flankingstemcolor)
-    setp(stemlines, 'linewidth', linewidth)
-    setp(markerline, 'markersize', markersize)
-    setp(baseline, 'linewidth', linewidth-0.5)
-    setp(markerline, 'markeredgewidth', markeredgewidth)
-    markerline, stemlines, baseline  = stem_plot.stem(X[fs:-fs], [y for y in y_phylop_pixels[fs:-fs]], markerfmt="g_", linefmt="g-", basefmt="r-")
-    setp(stemlines, 'linewidth', linewidth)
-    setp(markerline, 'markersize', markersize)
-    setp(markerline, 'markeredgewidth', markeredgewidth)
-    setp(baseline, 'linewidth', linewidth-0.5)
-    markerline, stemlines, baseline  =  stem_plot.stem(X[-fs:], [y for y in y_phylop_pixels[-fs:]], markerfmt="_", linefmt="-", markerfacecolor=flankingstemcolor, color=greycolor)
-    setp(stemlines, 'color', flankingstemcolor)
-    setp(markerline, 'markerfacecolor', flankingstemcolor)
-    setp(stemlines, 'linewidth', linewidth)
-    setp(markerline, 'markersize', markersize)
-    setp(markerline, 'markeredgewidth', markeredgewidth)
-    setp(markerline, 'color', flankingstemcolor)
-    setp(baseline, 'linewidth', linewidth-0.5)
+        logo_plot.imshow(logo, extent=[40+15+z*(a+1.9),logo.shape[1]+15+XSCALE_FACTOR*(a+1.9),0,logo.shape[0]])
+        logo_plot.set_axis_off()
+        f.add_subplot(logo_plot)
 
-
-    indices_str=[]
-    indices1 = np.linspace(-fs,-1, 2)
-    for i in indices1:
-        indices_str.append('')
-    indices2 = np.arange(0, len(X)-2*fs,5)
-    for i in indices2:
-        indices_str.append('${}$'.format(int(i)+1))
-
-    indices3 = np.linspace(motif_length, motif_length+fs-1, 2)
-
-    for i in indices3:
-        indices_str.append('')
+        stem_plot = plt.Subplot(f, gs[1], sharex=logo_plot)
+        markerline, stemlines, baseline  = stem_plot.stem(X[:fs], [y for y in y_phylop_pixels[:fs]], markerfmt="_", linefmt="-", markerfacecolor=flankingstemcolor, color=greycolor)
+        setp(stemlines, 'color', flankingstemcolor)
+        setp(markerline, 'markerfacecolor', flankingstemcolor)
+        setp(markerline, 'color', flankingstemcolor)
+        setp(stemlines, 'linewidth', linewidth)
+        setp(markerline, 'markersize', markersize)
+        setp(baseline, 'linewidth', linewidth-0.5)
+        setp(markerline, 'markeredgewidth', markeredgewidth)
+        markerline, stemlines, baseline  = stem_plot.stem(X[fs:-fs], [y for y in y_phylop_pixels[fs:-fs]], markerfmt="g_", linefmt="g-", basefmt="r-")
+        setp(stemlines, 'linewidth', linewidth)
+        setp(markerline, 'markersize', markersize)
+        setp(markerline, 'markeredgewidth', markeredgewidth)
+        setp(baseline, 'linewidth', linewidth-0.5)
+        markerline, stemlines, baseline  =  stem_plot.stem(X[-fs:], [y for y in y_phylop_pixels[-fs:]], markerfmt="_", linefmt="-", markerfacecolor=flankingstemcolor, color=greycolor)
+        setp(stemlines, 'color', flankingstemcolor)
+        setp(markerline, 'markerfacecolor', flankingstemcolor)
+        setp(stemlines, 'linewidth', linewidth)
+        setp(markerline, 'markersize', markersize)
+        setp(markerline, 'markeredgewidth', markeredgewidth)
+        setp(markerline, 'color', flankingstemcolor)
+        setp(baseline, 'linewidth', linewidth-0.5)
 
 
-    indices12 = np.concatenate((indices1, indices2))
-    indices = np.concatenate((indices12, indices3))
-    xticks = [X[int(i)+fs] for i in indices]
+        indices_str=[]
+        indices1 = np.linspace(-fs,-1, 2)
+        for i in indices1:
+            indices_str.append('')
+        indices2 = np.arange(0, len(X)-2*fs,5)
+        for i in indices2:
+            indices_str.append('${}$'.format(int(i)+1))
 
-    max_yticks = 3
-    yloc = plt.MaxNLocator(max_yticks)
-    stem_plot.yaxis.set_major_locator(yloc)
+        indices3 = np.linspace(motif_length, motif_length+fs-1, 2)
 
-    #ticks_and_labels = np.linspace(1.02*min(min(y_phylop_pixels), -0.1), 1.02*max(y_phylop_pixels), num = 5, endpoint=True)
-    #stem_plot.set_yticks(ticks_and_labels)
-    #stem_plot.set_yticklabels(['$%.2f$' %x for x in ticks_and_labels])#(["%0.2f"%(min(y_phylop_pixels)/__scale__), "%0.2f"%(np.mean(y_phylop_pixels)/__scale__), "%0.2f"%(max(y_phylop_pixels)/__scale__)], fontsize=fontsize)
-    stem_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Position}$', fontsize=fontsize, fontweight='bold')
-    stem_plot.set_xlim([1.2*a,X[-1]+linewidth*1.8])
-    stem_plot.set_ylim([min(np.min(y_phylop_pixels), -0.01)-0.03, np.max(y_phylop_pixels,0.01)])
-    stem_plot.get_xaxis().tick_bottom()
-    stem_plot.get_yaxis().tick_left()
-    stem_plot.set_xticks(xticks)
-    stem_plot.set_xticklabels(indices_str, fontsize=fontsize)
-    stem_plot.spines['top'].set_visible(False)
-    stem_plot.spines['right'].set_visible(False)
-    stem_plot.yaxis.set_ticks_position('left')
-    stem_plot.xaxis.set_ticks_position('bottom')
-    stem_plot.spines['left'].set_position('zero')
-    #stem_plot.spines['bottom'].set_position(matplotlib.transforms.Bbox(array([[0.125,0.63],[0.25,0.25]])))
-    stem_plot.get_yaxis().set_tick_params(direction='out')
-    stem_plot.get_xaxis().set_tick_params(direction='out')
-    stem_plot.tick_params(axis='y', which='major', pad=tickpad)
-    stem_plot.tick_params(axis='x', which='major', pad=tickpad)
-    stem_plot.tick_params('both', length=ticklength, width=2, which='major')
-    stem_plot.set_ylabel('$\mathrm{PhyloP}\ \mathrm{Score}$', fontsize=fontsize)
-    f.add_subplot(stem_plot)
+        for i in indices3:
+            indices_str.append('')
 
 
-    if sample_gerp_data:
-        gs1 =  gridspec.GridSpec(2, 3, height_ratios=[1,4], width_ratios=[1,1,1])
-    else:
-        gs1 =  gridspec.GridSpec(2, 2, height_ratios=[1,4], width_ratios=[1,1])
+        indices12 = np.concatenate((indices1, indices2))
+        indices = np.concatenate((indices12, indices3))
+        xticks = [X[int(i)+fs] for i in indices]
 
-    gs1.update(bottom=0.14, right=0.95, left=1-right*0.85, wspace=0.5)
+        max_yticks = 3
+        yloc = plt.MaxNLocator(max_yticks)
+        stem_plot.yaxis.set_major_locator(yloc)
+
+        #ticks_and_labels = np.linspace(1.02*min(min(y_phylop_pixels), -0.1), 1.02*max(y_phylop_pixels), num = 5, endpoint=True)
+        #stem_plot.set_yticks(ticks_and_labels)
+        #stem_plot.set_yticklabels(['$%.2f$' %x for x in ticks_and_labels])#(["%0.2f"%(min(y_phylop_pixels)/__scale__), "%0.2f"%(np.mean(y_phylop_pixels)/__scale__), "%0.2f"%(max(y_phylop_pixels)/__scale__)], fontsize=fontsize)
+        stem_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Position}$', fontsize=fontsize, fontweight='bold')
+        stem_plot.set_xlim([1.2*a,X[-1]+linewidth*1.8])
+        stem_plot.set_ylim([min(np.min(y_phylop_pixels), -0.01)-0.03, np.max(y_phylop_pixels,0.01)])
+        stem_plot.get_xaxis().tick_bottom()
+        stem_plot.get_yaxis().tick_left()
+        stem_plot.set_xticks(xticks)
+        stem_plot.set_xticklabels(indices_str, fontsize=fontsize)
+        stem_plot.spines['top'].set_visible(False)
+        stem_plot.spines['right'].set_visible(False)
+        stem_plot.yaxis.set_ticks_position('left')
+        stem_plot.xaxis.set_ticks_position('bottom')
+        stem_plot.spines['left'].set_position('zero')
+        #stem_plot.spines['bottom'].set_position(matplotlib.transforms.Bbox(array([[0.125,0.63],[0.25,0.25]])))
+        stem_plot.get_yaxis().set_tick_params(direction='out')
+        stem_plot.get_xaxis().set_tick_params(direction='out')
+        stem_plot.tick_params(axis='y', which='major', pad=tickpad)
+        stem_plot.tick_params(axis='x', which='major', pad=tickpad)
+        stem_plot.tick_params('both', length=ticklength, width=2, which='major')
+        stem_plot.set_ylabel('$\mathrm{PhyloP}\ \mathrm{Score}$', fontsize=fontsize)
+        f.add_subplot(stem_plot)
 
 
-    phlyop_plots_leg = plt.Subplot(f, gs1[0,0], autoscale_on=True)
-    pearsonr_pval = str('%.1g'%pr_p[1])
-    if 'e' in pearsonr_pval:
-        pearsonr_pval += '}'
-        pearsonr_pval = pearsonr_pval.replace('e', '*10^{').replace('-0','-')
-    score_pval = str('%.1g'%p_deltaphylop)
-    if 'e' in score_pval:
-        score_pval += '}'
-        score_pval = score_pval.replace('e', '*10^{').replace('-0','-')
+        if sample_gerp_data:
+            gs1 =  gridspec.GridSpec(2, 3, height_ratios=[1,4], width_ratios=[1,1,1])
+        else:
+            gs1 =  gridspec.GridSpec(2, 2, height_ratios=[1,4], width_ratios=[1,1])
 
-    textstr = r'\noindent$R_{pearson}=%.2f$($p=%s$)\\~\\$\Delta_{Phylop}=%.2f$($p=%s$)\\~\\' %(pr_p[0], pearsonr_pval, delta_phylop, score_pval)#, reg_phylop_control.rsquared, num_occurrences*reg_phylop_control.params[1])
-    txtx = 1-legend_xmultiplier*len(textstr)/100.0
-    phlyop_plots_leg.set_frame_on(False)
-    phlyop_plots_leg.set_xticks([])
-    phlyop_plots_leg.set_yticks([])
-    phlyop_plots_leg.text(txtx, txty, textstr, fontsize=legend_fontsize)
-    f.add_subplot(phlyop_plots_leg)
+        gs1.update(bottom=0.14, right=0.95, left=1-right*0.85, wspace=0.5)
 
-    phylop_scatter_plot = plt.Subplot(f, gs1[1,0], autoscale_on=True)
-    fit = np.polyfit(motif_scores,motif_sample_phylo_scores,1)
-    fit_fn = np.poly1d(fit)
 
-    phylop_scatter_plot.scatter(motif_scores, motif_sample_phylo_scores, color='g', s=[pointsize for i in motif_scores])
-    phylop_scatter_plot.plot(motif_scores, y_reg_phylop_sample, 'g', motif_scores, fit_fn(motif_scores), color='g', linewidth=plot_linewidth)
-    phylop_scatter_plot.scatter(motif_scores, motif_control_phylo_scores, color=greycolor, s=[pointsize for i in motif_scores])
-    phylop_scatter_plot.plot(motif_scores, y_reg_phylop_control, color=greycolor, linewidth=plot_linewidth)
-
-    ticks_and_labels = np.linspace(1.02*min(motif_scores), 1.02*max(motif_scores), num = 5, endpoint=True)
-    phylop_scatter_plot.set_xticks(ticks_and_labels)
-    ticks_and_labels = ["$%.2f$"%(x/num_occurrences) for x in ticks_and_labels]
-    phylop_scatter_plot.set_xticklabels(ticks_and_labels)
-
-    ##max_xticks = 5
-    ##xloc = plt.MaxNLocator(max_xticks)
-    ##print xloc
-    ##phylop_scatter_plot.xaxis.set_major_locator(xloc)
-    #ticks_and_labels = np.linspace(1.02*min(min(shifted_sample_phylo_scores), min(shifted_control_phylo_scores)), 1.02*max(max(shifted_sample_phylo_scores),max(shifted_control_phylo_scores)),
-                                   #num = 4, endpoint=True)
-    #phylop_scatter_plot.set_yticks(ticks_and_labels)
-    #phylop_scatter_plot.set_yticklabels(["$%0.2f$"%x for x in ticks_and_labels])
-    max_yticks = 4
-    yloc = plt.MaxNLocator(max_yticks)
-    phylop_scatter_plot.yaxis.set_major_locator(yloc)
-    phylop_scatter_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Frequency}$', fontsize=fontsize, fontweight='bold')
-    phylop_scatter_plot.get_xaxis().tick_bottom()
-    phylop_scatter_plot.get_yaxis().tick_left()
-    phylop_scatter_plot.set_ylabel('$\mathrm{PhyloP}\ \mathrm{Score}$', fontsize=fontsize, fontweight='bold')
-    phylop_scatter_plot.tick_params(axis='y', which='major', pad=tickpad)
-    phylop_scatter_plot.tick_params(axis='x', which='major', pad=tickpad)
-    phylop_scatter_plot.get_yaxis().set_tick_params(direction='out')
-    phylop_scatter_plot.get_xaxis().set_tick_params(direction='out')
-    phylop_scatter_plot.tick_params('both', length=ticklength, width=2, which='major')
-
-    f.add_subplot(phylop_scatter_plot)
-
-    gerp_plots_leg = plt.Subplot(f, gs1[0,1], autoscale_on=True)
-    gerp_plots_leg.set_frame_on(False)
-    gerp_plots_leg.set_xticks([])
-    gerp_plots_leg.set_yticks([])
-    pearsonr_pval = str('%.1g'%pr_p[1])
-    if 'e' in pearsonr_pval:
-        pearsonr_pval += '}'
-        pearsonr_pval = pearsonr_pval.replace('e', '*10^{').replace('-0','-')
-
-    if sample_gerp_data:
-        score_pval = str('%.1g'%p_deltagerp)
+        phlyop_plots_leg = plt.Subplot(f, gs1[0,0], autoscale_on=True)
+        pearsonr_pval = str('%.1g'%pr_p[1])
+        if 'e' in pearsonr_pval:
+            pearsonr_pval += '}'
+            pearsonr_pval = pearsonr_pval.replace('e', '*10^{').replace('-0','-')
+        score_pval = str('%.1g'%p_deltaphylop)
         if 'e' in score_pval:
             score_pval += '}'
             score_pval = score_pval.replace('e', '*10^{').replace('-0','-')
-        textstr = r'\noindent$R_{pearson}=%.2f$($p=%s$)\\~\\$\Delta_{{Gerp}}=%.2f$($p=%s$)\\~\\'%(pr_g[0], pearsonr_pval, delta_gerp, score_pval)
-        txtx = 1-legend_xmultiplier*len(textstr)/100.0
-        gerp_plots_leg.text(txtx, txty, textstr, fontsize=legend_fontsize)
-        f.add_subplot(gerp_plots_leg)
 
-        gerp_scatter_plot = plt.Subplot(f, gs1[1,1], autoscale_on=True)
-        gerp_scatter_plot.scatter(motif_scores, motif_sample_gerp_scores, color='g', s=[pointsize for i in motif_scores])
-        gerp_scatter_plot.plot(motif_scores, y_reg_gerp_sample, color='g', linewidth=plot_linewidth)
-        gerp_scatter_plot.scatter(motif_scores, motif_control_gerp_scores, color=greycolor, s=[pointsize for i in motif_scores])
-        gerp_scatter_plot.plot(motif_scores, y_reg_gerp_control, color=greycolor, linewidth=plot_linewidth)
+        textstr = r'\noindent$R_{pearson}=%.2f$($p=%s$)\\~\\$\Delta_{Phylop}=%.2f$($p=%s$)\\~\\' %(pr_p[0], pearsonr_pval, delta_phylop, score_pval)#, reg_phylop_control.rsquared, num_occurrences*reg_phylop_control.params[1])
+        txtx = 1-legend_xmultiplier*len(textstr)/100.0
+        phlyop_plots_leg.set_frame_on(False)
+        phlyop_plots_leg.set_xticks([])
+        phlyop_plots_leg.set_yticks([])
+        phlyop_plots_leg.text(txtx, txty, textstr, fontsize=legend_fontsize)
+        f.add_subplot(phlyop_plots_leg)
+
+        phylop_scatter_plot = plt.Subplot(f, gs1[1,0], autoscale_on=True)
+        fit = np.polyfit(motif_scores,motif_sample_phylo_scores,1)
+        fit_fn = np.poly1d(fit)
+
+        phylop_scatter_plot.scatter(motif_scores, motif_sample_phylo_scores, color='g', s=[pointsize for i in motif_scores])
+        phylop_scatter_plot.plot(motif_scores, y_reg_phylop_sample, 'g', motif_scores, fit_fn(motif_scores), color='g', linewidth=plot_linewidth)
+        phylop_scatter_plot.scatter(motif_scores, motif_control_phylo_scores, color=greycolor, s=[pointsize for i in motif_scores])
+        phylop_scatter_plot.plot(motif_scores, y_reg_phylop_control, color=greycolor, linewidth=plot_linewidth)
+
         ticks_and_labels = np.linspace(1.02*min(motif_scores), 1.02*max(motif_scores), num = 5, endpoint=True)
-        gerp_scatter_plot.set_xticks(ticks_and_labels)
+        phylop_scatter_plot.set_xticks(ticks_and_labels)
         ticks_and_labels = ["$%.2f$"%(x/num_occurrences) for x in ticks_and_labels]
-        gerp_scatter_plot.set_xticklabels(ticks_and_labels)
+        phylop_scatter_plot.set_xticklabels(ticks_and_labels)
 
         ##max_xticks = 5
         ##xloc = plt.MaxNLocator(max_xticks)
-        ##gerp_scatter_plot.xaxis.set_major_locator(xloc)
+        ##print xloc
+        ##phylop_scatter_plot.xaxis.set_major_locator(xloc)
+        #ticks_and_labels = np.linspace(1.02*min(min(shifted_sample_phylo_scores), min(shifted_control_phylo_scores)), 1.02*max(max(shifted_sample_phylo_scores),max(shifted_control_phylo_scores)),
+                                    #num = 4, endpoint=True)
+        #phylop_scatter_plot.set_yticks(ticks_and_labels)
+        #phylop_scatter_plot.set_yticklabels(["$%0.2f$"%x for x in ticks_and_labels])
         max_yticks = 4
         yloc = plt.MaxNLocator(max_yticks)
-        gerp_scatter_plot.yaxis.set_major_locator(yloc)
-        gerp_scatter_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Frequency}$', fontsize=fontsize, fontweight='bold')
-        gerp_scatter_plot.set_ylabel('$\mathrm{GERP}\ \mathrm{Score}$', fontsize=fontsize, fontweight='bold')
-        gerp_scatter_plot.get_xaxis().tick_bottom()
-        gerp_scatter_plot.get_yaxis().tick_left()
-        gerp_scatter_plot.get_yaxis().set_tick_params(direction='out')
-        gerp_scatter_plot.get_xaxis().set_tick_params(direction='out')
-        gerp_scatter_plot.tick_params(axis='y', which='major', pad=tickpad)
-        gerp_scatter_plot.tick_params(axis='x', which='major', pad=tickpad)
-        gerp_scatter_plot.tick_params('both', length=ticklength, width=2, which='major')
-        f.add_subplot(gerp_scatter_plot)
+        phylop_scatter_plot.yaxis.set_major_locator(yloc)
+        phylop_scatter_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Frequency}$', fontsize=fontsize, fontweight='bold')
+        phylop_scatter_plot.get_xaxis().tick_bottom()
+        phylop_scatter_plot.get_yaxis().tick_left()
+        phylop_scatter_plot.set_ylabel('$\mathrm{PhyloP}\ \mathrm{Score}$', fontsize=fontsize, fontweight='bold')
+        phylop_scatter_plot.tick_params(axis='y', which='major', pad=tickpad)
+        phylop_scatter_plot.tick_params(axis='x', which='major', pad=tickpad)
+        phylop_scatter_plot.get_yaxis().set_tick_params(direction='out')
+        phylop_scatter_plot.get_xaxis().set_tick_params(direction='out')
+        phylop_scatter_plot.tick_params('both', length=ticklength, width=2, which='major')
 
-    if sample_gerp_data:
-        histogram_header_subplot = gs1[0,2]
-        histogram_subplot = gs1[1,2]
-    else:
-        histogram_header_subplot = gs1[0,1]
-        histogram_subplot = gs1[1,1]
+        f.add_subplot(phylop_scatter_plot)
 
-    enrichment_plot4 = plt.Subplot(f, histogram_header_subplot, autoscale_on=True)
-    enrichment_plot4.set_frame_on(False)
-    enrichment_plot4.set_xticks([])
-    enrichment_plot4.set_yticks([])
-    all_distances = get_motif_distances(peak_file, fimo_file)
-    motifs_within_100 = filter(lambda x: x<=100 and x>=-100, all_distances)
-    motifs_within_100_200 = filter(lambda x: (x<200 and x>100) or (x>-200 and x<-100), all_distances)
-    if len(motifs_within_100_200)>0:
-        enrichment = len(motifs_within_100)/(len(motifs_within_100_200))#+len(motifs_within_100))
-    else:
-        enrichment = 1
-    enrichment_pval = 0
-    number_of_sites = len(motifs_within_100)+len(motifs_within_100_200) #fimo_sites_intersect(parsed.fimo_file)
-    probability = 200/(ENRICHMENT_SEQ_LENGTH-motif_length)
-    print 'probability: {}'.format(probability)
-    print 'N: {}'.format(number_of_sites)
-    print 'Motifs within 100: {}'.format(len(motifs_within_100))
-    enrichment_pval=binom.sf(len(motifs_within_100), number_of_sites, probability)
-    print 'p-val: {}'.format(enrichment_pval)
-    enrichment_pval = str('%.1g'%enrichment_pval)
-    if 'e' in enrichment_pval:
-        enrichment_pval+= '}'
-        enrichment_pval= enrichment_pval.replace('e', '*10^{').replace('-0','-')
-    textstr = r'\noindent$Enrichment={0:.2f}$\\~\\$(p={1})$'.format(enrichment, enrichment_pval)
-    txtx = 0.1*len(textstr)/100.0
-    enrichment_plot4.text(txtx, txty, textstr, fontsize=legend_fontsize)
-    f.add_subplot(enrichment_plot4)
-    enrichment_plot = plt.Subplot(f, histogram_subplot, autoscale_on=True)
-    enrichment_plot.hist(all_distances, histogram_nbins, color='white', alpha=0.8, range=[-200,200])
-    enrichment_plot.set_xticks([-200,-100,0,100,200])
-    max_yticks = 3
-    yloc = plt.MaxNLocator(max_yticks)
-    enrichment_plot.yaxis.set_major_locator(yloc)
-    #enrichment_plot.set_yticks(range(1,6))
-    ticks_and_labels = [-200,-100,0,100,200]
-    all_distances = np.asarray(all_distances)
-    enrichment_plot.set_xticklabels(['${}$'.format(x) for x in ticks_and_labels])
-    enrichment_plot.tick_params(axis='y', which='major', pad=tickpad)
-    enrichment_plot.tick_params(axis='x', which='major', pad=tickpad)
-    enrichment_plot.tick_params('both', length=ticklength, width=2, which='major')
-    enrichment_plot.get_xaxis().tick_bottom()
-    enrichment_plot.get_yaxis().tick_left()
-    enrichment_plot.get_yaxis().set_tick_params(direction='out')
-    enrichment_plot.get_xaxis().set_tick_params(direction='out')
-    enrichment_plot.axvline(x=-100, linewidth=3, color='red', linestyle='-.')
-    enrichment_plot.axvline(x=100, linewidth=3, color='red', linestyle='-.')
-    f.add_subplot(enrichment_plot)
+        gerp_plots_leg = plt.Subplot(f, gs1[0,1], autoscale_on=True)
+        gerp_plots_leg.set_frame_on(False)
+        gerp_plots_leg.set_xticks([])
+        gerp_plots_leg.set_yticks([])
+        pearsonr_pval = str('%.1g'%pr_p[1])
+        if 'e' in pearsonr_pval:
+            pearsonr_pval += '}'
+            pearsonr_pval = pearsonr_pval.replace('e', '*10^{').replace('-0','-')
 
-    f.savefig('motif{}Combined_plots.png'.format(motif_number), figsize=figsize, dpi=dpi)
+        if sample_gerp_data:
+            score_pval = str('%.1g'%p_deltagerp)
+            if 'e' in score_pval:
+                score_pval += '}'
+                score_pval = score_pval.replace('e', '*10^{').replace('-0','-')
+            textstr = r'\noindent$R_{pearson}=%.2f$($p=%s$)\\~\\$\Delta_{{Gerp}}=%.2f$($p=%s$)\\~\\'%(pr_g[0], pearsonr_pval, delta_gerp, score_pval)
+            txtx = 1-legend_xmultiplier*len(textstr)/100.0
+            gerp_plots_leg.text(txtx, txty, textstr, fontsize=legend_fontsize)
+            f.add_subplot(gerp_plots_leg)
+
+            gerp_scatter_plot = plt.Subplot(f, gs1[1,1], autoscale_on=True)
+            gerp_scatter_plot.scatter(motif_scores, motif_sample_gerp_scores, color='g', s=[pointsize for i in motif_scores])
+            gerp_scatter_plot.plot(motif_scores, y_reg_gerp_sample, color='g', linewidth=plot_linewidth)
+            gerp_scatter_plot.scatter(motif_scores, motif_control_gerp_scores, color=greycolor, s=[pointsize for i in motif_scores])
+            gerp_scatter_plot.plot(motif_scores, y_reg_gerp_control, color=greycolor, linewidth=plot_linewidth)
+            ticks_and_labels = np.linspace(1.02*min(motif_scores), 1.02*max(motif_scores), num = 5, endpoint=True)
+            gerp_scatter_plot.set_xticks(ticks_and_labels)
+            ticks_and_labels = ["$%.2f$"%(x/num_occurrences) for x in ticks_and_labels]
+            gerp_scatter_plot.set_xticklabels(ticks_and_labels)
+
+            ##max_xticks = 5
+            ##xloc = plt.MaxNLocator(max_xticks)
+            ##gerp_scatter_plot.xaxis.set_major_locator(xloc)
+            max_yticks = 4
+            yloc = plt.MaxNLocator(max_yticks)
+            gerp_scatter_plot.yaxis.set_major_locator(yloc)
+            gerp_scatter_plot.set_xlabel('$\mathrm{Base}\ \mathrm{Frequency}$', fontsize=fontsize, fontweight='bold')
+            gerp_scatter_plot.set_ylabel('$\mathrm{GERP}\ \mathrm{Score}$', fontsize=fontsize, fontweight='bold')
+            gerp_scatter_plot.get_xaxis().tick_bottom()
+            gerp_scatter_plot.get_yaxis().tick_left()
+            gerp_scatter_plot.get_yaxis().set_tick_params(direction='out')
+            gerp_scatter_plot.get_xaxis().set_tick_params(direction='out')
+            gerp_scatter_plot.tick_params(axis='y', which='major', pad=tickpad)
+            gerp_scatter_plot.tick_params(axis='x', which='major', pad=tickpad)
+            gerp_scatter_plot.tick_params('both', length=ticklength, width=2, which='major')
+            f.add_subplot(gerp_scatter_plot)
+
+        if sample_gerp_data:
+            histogram_header_subplot = gs1[0,2]
+            histogram_subplot = gs1[1,2]
+        else:
+            histogram_header_subplot = gs1[0,1]
+            histogram_subplot = gs1[1,1]
+
+        enrichment_plot4 = plt.Subplot(f, histogram_header_subplot, autoscale_on=True)
+        enrichment_plot4.set_frame_on(False)
+        enrichment_plot4.set_xticks([])
+        enrichment_plot4.set_yticks([])
+        all_distances = get_motif_distances(peak_file, fimo_file)
+        motifs_within_100 = filter(lambda x: x<=100 and x>=-100, all_distances)
+        motifs_within_100_200 = filter(lambda x: (x<200 and x>100) or (x>-200 and x<-100), all_distances)
+        if len(motifs_within_100_200)>0:
+            enrichment = len(motifs_within_100)/(len(motifs_within_100_200))#+len(motifs_within_100))
+        else:
+            enrichment = 1
+        enrichment_pval = 0
+        number_of_sites = len(motifs_within_100)+len(motifs_within_100_200) #fimo_sites_intersect(parsed.fimo_file)
+        probability = 200/(ENRICHMENT_SEQ_LENGTH-motif_length)
+        #print 'probability: {}'.format(probability)
+        #print 'N: {}'.format(number_of_sites)
+        #print 'Motifs within 100: {}'.format(len(motifs_within_100))
+        enrichment_pval=binom.sf(len(motifs_within_100), number_of_sites, probability)
+        print 'p-val: {}'.format(enrichment_pval)
+        enrichment_pval = str('%.1g'%enrichment_pval)
+        if 'e' in enrichment_pval:
+            enrichment_pval+= '}'
+            enrichment_pval= enrichment_pval.replace('e', '*10^{').replace('-0','-')
+        textstr = r'\noindent$Enrichment={0:.2f}$\\~\\$(p={1})$'.format(enrichment, enrichment_pval)
+        txtx = 0.1*len(textstr)/100.0
+        enrichment_plot4.text(txtx, txty, textstr, fontsize=legend_fontsize)
+        f.add_subplot(enrichment_plot4)
+        enrichment_plot = plt.Subplot(f, histogram_subplot, autoscale_on=True)
+        enrichment_plot.hist(all_distances, histogram_nbins, color='white', alpha=0.8, range=[-200,200])
+        enrichment_plot.set_xticks([-200,-100,0,100,200])
+        max_yticks = 3
+        yloc = plt.MaxNLocator(max_yticks)
+        enrichment_plot.yaxis.set_major_locator(yloc)
+        #enrichment_plot.set_yticks(range(1,6))
+        ticks_and_labels = [-200,-100,0,100,200]
+        all_distances = np.asarray(all_distances)
+        enrichment_plot.set_xticklabels(['${}$'.format(x) for x in ticks_and_labels])
+        enrichment_plot.tick_params(axis='y', which='major', pad=tickpad)
+        enrichment_plot.tick_params(axis='x', which='major', pad=tickpad)
+        enrichment_plot.tick_params('both', length=ticklength, width=2, which='major')
+        enrichment_plot.get_xaxis().tick_bottom()
+        enrichment_plot.get_yaxis().tick_left()
+        enrichment_plot.get_yaxis().set_tick_params(direction='out')
+        enrichment_plot.get_xaxis().set_tick_params(direction='out')
+        enrichment_plot.axvline(x=-100, linewidth=3, color='red', linestyle='-.')
+        enrichment_plot.axvline(x=100, linewidth=3, color='red', linestyle='-.')
+        f.add_subplot(enrichment_plot)
+        if 'rc' not in ln:
+            out_file = 'motif{}Combined_plots.png'.format(motif_number)
+        else:
+            out_file = 'motif{}Combined_plots_rc.png'.format(motif_number)
+        f.savefig(out_file, figsize=figsize, dpi=dpi)
 
 def main(argv):
     parser = argparse.ArgumentParser(description='Process meme files')

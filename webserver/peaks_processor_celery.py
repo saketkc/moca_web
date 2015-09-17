@@ -26,6 +26,8 @@ software_location['fimo2sites'] = binary_config['fimo2sites']
 software_location['fimo'] = binary_config['fimo']
 software_location['extract_chunk'] = binary_config['extract_chunk']
 
+error_messages= {k:'Error executing {}'.format(k) for k in software_location.keys()}
+
 param_config = read_config('Parameters')
 
 FLANKING_SEQ_LENGTH = int(param_config['flanking_seq_length'])
@@ -45,8 +47,6 @@ BASE_LOCATION = path_config['base_location']
 FORMAT = '%(asctime)-15s %(message)s'
 GENOME_TABLE =  ''#'/media/data1/genomes/hg19/fasta/hg19.sizes'
 GENOME = ''# '/media/data1/genomes/hg19/fasta/hg19.fa'
-
-fimo_2_site_columns = ['chrom', 'chromStart', 'chromEnd', 'strand', 'p-val', 'q-val']
 
 
 class EncodeProcessor(object):
@@ -83,15 +83,17 @@ class EncodeProcessor(object):
         dirs = filter(lambda f: os.path.isdir(f), file_depth)
         return dirs
     @staticmethod
-    def run_subprocess(command, cwd=None, stdout=None):
+    def run_subprocess(command, cwd=None, stdout=subprocess.PIPE):
         print command
         split_command = command.split(' ')
         logging.info('*******Running command********')
         logging.debug('{}'.format(command))
-        output = subprocess.call(split_command, cwd=cwd, stdout=stdout)
-        if (int(output)!=0):
+        p = subprocess.Popen(split_command, cwd=cwd, stdout=stdout, stderr=subprocess.PIPE)
+        output, stderr = p.communicate()
+        returncode =p.returncode
+        if (int(returncode)!=0):
             sys.stderr.write('Error executing: {}'.format(command))
-            sys.exit(1)
+            raise RuntimeError(command, output, stderr)
         logging.info('###########Output Start###########')
         logging.info(output)
         logging.info('###########Output End###########')
@@ -167,23 +169,32 @@ class EncodeProcessor(object):
         self.run_subprocess("head -{} peaks.sorted.tsv".format(MAX_PEAKS_TO_KEEP), cwd=cwd, stdout=head_write)
         logging.info('############PeakHead End########')
         logging.info('############ExtractChunk Start########')
-        self.run_subprocess("{0} positions_file=peaks.sorted.top{1}.tsv genome_table={2} genome_file={3} output_file=flanking_sequences_{4}.fa seq_length={4} offset={5}".format(software_location['extract_chunk'],
-                                                                                                                                                                 MAX_PEAKS_TO_KEEP,
-                                                                                                                                                                 self.genome_table,
-                                                                                                                                                                 self.genome,
-                                                                                                                                                                 FLANKING_SEQ_LENGTH, -FLANKING_SEQ_LENGTH/2),
-                            cwd=cwd)
+        try:
+            self.run_subprocess("{0} positions_file=peaks.sorted.top{1}.tsv genome_table={2} genome_file={3} output_file=flanking_sequences_{4}.fa seq_length={4} offset={5}".format(software_location['extract_chunk'],
+                                                                                                                                                                    MAX_PEAKS_TO_KEEP,
+                                                                                                                                                                    self.genome_table,
+                                                                                                                                                                    self.genome,
+                                                                                                                                                                    FLANKING_SEQ_LENGTH, -FLANKING_SEQ_LENGTH/2),
+                                cwd=cwd)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['extract_chunk'], e.args)
         logging.info('############ExtractChunk End########')
         logging.info('############ExtractChunkEmrichment Start########')
-        self.run_subprocess("{0} positions_file=peaks.sorted.top{1}.tsv genome_table={2} genome_file={3} output_file=flanking_sequences_enrichment_{4}.fa seq_length={4} offset={5}".format(software_location['extract_chunk'],
-                                                                                                                                                                            MAX_PEAKS_TO_KEEP,
-                                                                                                                                                                            self.genome_table,
-                                                                                                                                                                            self.genome,
-                                                                                                                                                                            ENRICHMENT_SEQ_LENGTH, -ENRICHMENT_SEQ_LENGTH/2),
+        try:
+            self.run_subprocess("{0} positions_file=peaks.sorted.top{1}.tsv genome_table={2} genome_file={3} output_file=flanking_sequences_enrichment_{4}.fa seq_length={4} offset={5}".format(software_location['extract_chunk'],
+                                                                                                                                                                                MAX_PEAKS_TO_KEEP,
+                                                                                                                                                                                self.genome_table,
+                                                                                                                                                                                self.genome,
+                                                                                                                                                                                ENRICHMENT_SEQ_LENGTH, -ENRICHMENT_SEQ_LENGTH/2),
                             cwd=cwd)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['extract_chunk'], e.args)
         logging.info('############ExtractChunkEnrichment End########')
         logging.info('############MEMEAnalysis Start########')
-        self.run_subprocess("{0} -p 24 -oc meme_analysis -dna -revcomp -nmotifs {1} -maxsize 1000000 flanking_sequences_{2}.fa".format(software_location['meme'], N_MEME_MOTIFS, FLANKING_SEQ_LENGTH), cwd=cwd)
+        try:
+            self.run_subprocess("{0} -p 24 -oc meme_analysis -dna -revcomp -nmotifs {1} -maxsize 1000000 flanking_sequences_{2}.fa".format(software_location['meme'], N_MEME_MOTIFS, FLANKING_SEQ_LENGTH), cwd=cwd)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['meme'], e.args)
         logging.info('############MEMEAnalysis End########')
 
     def conservation_analysis(self, motif):
@@ -220,11 +231,18 @@ class EncodeProcessor(object):
         stats_files = [(stats_phyloP100, stats_phyloP100_random), (stats_gerp, stats_gerp_random)]
 
         logging.info('################Fimo Start##################')
-        self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path, meme_file, fl), cwd=path)
+        try:
+            self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path, meme_file, fl), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo'], e.args)
+
         logging.info('################Fimo End##################')
 
         logging.info('################Fimo2Sites Start##################')
-        self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in, fimo_2_out), cwd=path)
+        try:
+            self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in, fimo_2_out), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo2sites'], e.args)
         logging.info('################Fimo2Sites End##################')
 
         logging.info('################Fimo2Sites SortStart##################')
@@ -234,22 +252,35 @@ class EncodeProcessor(object):
         logging.info('################Fimo2Sites SortEnd##################')
 
         logging.info('################FimoRandom Start##################')
-        self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path_random, meme_file, random_fasta), cwd=path)
+        try:
+            self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path_random, meme_file, random_fasta), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo'], e.args)
         logging.info('################FimoRandom End##################')
 
         logging.info('################Fimo2SitesRandom Start##################')
-        self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in_random, fimo_2_out_random), cwd=path)
+        try:
+            self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in_random, fimo_2_out_random), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo2sites'], e.args)
         logging.info('################Fimo2SitesRandom End##################')
         p = pandas.read_table(fimo_2_out_random)
         c = p.sort(columns=['#chrom'])
         c.to_csv(fimo_2_out_random, sep='\t', index=False)
 
         logging.info('################FimoEnrichment Start##################')
-        self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path_enrichment, meme_file, enrichment_sequence), cwd=path)
+        try:
+            self.run_subprocess('{0} --motif {1} --thresh {2} -oc {3} {4} {5}'.format(software_location['fimo'], str(motif), float(FIMO_THRESHOLD), fimo_path_enrichment, meme_file, enrichment_sequence), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo'], e.args)
+
         logging.info('################FimoEnrichment End##################')
 
         logging.info('################Fimo2SitesEnrichment Start##################')
-        self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in_enrichment, fimo_2_out_enrichment), cwd=path)
+        try:
+            self.run_subprocess('{0} fimo_file={1} output_file={2}'.format(software_location['fimo2sites'], fimo_in_enrichment, fimo_2_out_enrichment), cwd=path)
+        except RuntimeError as e:
+            raise RuntimeError(error_messages['fimo2sites'], e.args)
         logging.info('################Fimo2SitesEnrichment End##################')
         p = pandas.read_table(fimo_2_out_enrichment)
         c = p.sort(columns=['#chrom'])
@@ -273,35 +304,45 @@ class EncodeProcessor(object):
 
             if phylo_in!='':
                 logging.info('###########P100WaySiteConservationRandom Start########################')
-                self.run_subprocess('{} sample_sites_file={} control_sites_file={} sample_outfile={} control_outfile={} genome_table={} wig_file={} flank={}'.format(software_location['calc_cons'],
-                                                                                                                                                                fimo_2_out,
-                                                                                                                                                                fimo_2_out_random,
-                                                                                                                                                                file_out[0],
-                                                                                                                                                                file_out[1],
-                                                                                                                                                                self.genome_table,
-                                                                                                                                                                phylo_in,
-                                                                                                                                                                MOTIF_FLANKING_BASES))
+                try:
+                    self.run_subprocess('{} sample_sites_file={} control_sites_file={} sample_outfile={} control_outfile={} genome_table={} wig_file={} flank={}'.format(software_location['calc_cons'],
+                                                                                                                                                                    fimo_2_out,
+                                                                                                                                                                    fimo_2_out_random,
+                                                                                                                                                                    file_out[0],
+                                                                                                                                                                    file_out[1],
+                                                                                                                                                                    self.genome_table,
+                                                                                                                                                                    phylo_in,
+                                                                                                                                                                    MOTIF_FLANKING_BASES))
+                except RuntimeError as e:
+                    raise RuntimeError(error_messages['calc_cons'], e.args)
+
                 logging.info('###########P100WaySiteConservationRandom End########################')
 
         if self.gerp_wig!='':
-            self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'], motif,
-                                                                                                       meme_file,
-                                                                                                       stats_files[0][0],
-                                                                                                       stats_files[0][1],
-                                                                                                       stats_files[1][0],
-                                                                                                       stats_files[1][1],
-                                                                                                       MOTIF_FLANKING_BASES,
-                                                                                                       peak_file,
-                                                                                                       fimo_2_out_enrichment), cwd=self.destination_path)
+            try:
+                self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'], motif,
+                                                                                                        meme_file,
+                                                                                                        stats_files[0][0],
+                                                                                                        stats_files[0][1],
+                                                                                                        stats_files[1][0],
+                                                                                                        stats_files[1][1],
+                                                                                                        MOTIF_FLANKING_BASES,
+                                                                                                        peak_file,
+                                                                                                        fimo_2_out_enrichment), cwd=self.destination_path)
+            except RuntimeError as e:
+                raise RuntimeError(error_messages['calc_cons'], e.args)
         else:
-            self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'],
-                                                                                         motif,
-                                                                                         meme_file,
-                                                                                         stats_files[0][0],
-                                                                                         stats_files[0][1],
-                                                                                         MOTIF_FLANKING_BASES,
-                                                                                         peak_file,
-                                                                                         fimo_2_out_enrichment), cwd=self.destination_path)
+            try:
+                self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'],
+                                                                                            motif,
+                                                                                            meme_file,
+                                                                                            stats_files[0][0],
+                                                                                            stats_files[0][1],
+                                                                                            MOTIF_FLANKING_BASES,
+                                                                                            peak_file,
+                                                                                            fimo_2_out_enrichment), cwd=self.destination_path)
+            except RuntimeError as e:
+                raise RuntimeError(error_messages['calc_cons'], e.args)
 
         static_destination = os.path.join(self.destination_path, 'motif{}'.format(motif))
         shutil.move(os.path.join(self.destination_path, 'motif{}Combined_plots.png'.format(motif)), static_destination + 'Combined_plots.png')
