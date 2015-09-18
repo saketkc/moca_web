@@ -574,6 +574,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         enrichment_plot4.set_xticks([])
         enrichment_plot4.set_yticks([])
         all_distances = get_motif_distances(peak_file, fimo_file)
+        fimo_dir = os.path.dirname(fimo_file)
         motifs_within_100 = filter(lambda x: x<=100 and x>=-100, all_distances)
         motifs_within_100_200 = filter(lambda x: (x<200 and x>100) or (x>-200 and x<-100), all_distances)
         if len(motifs_within_100_200)>0:
@@ -617,8 +618,10 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         enrichment_plot.axvline(x=100, linewidth=3, color='red', linestyle='-.')
         f.add_subplot(enrichment_plot)
         if 'rc' not in ln:
+            out_file = os.path.join(fimo_dir,'motif{}Combined_plots.png'.format(motif_number))
             out_file = 'motif{}Combined_plots.png'.format(motif_number)
         else:
+            out_file = os.path.join(fimo_dir,'motif{}Combined_plots_rc.png'.format(motif_number))
             out_file = 'motif{}Combined_plots_rc.png'.format(motif_number)
         f.savefig(out_file, figsize=figsize, dpi=dpi)
 

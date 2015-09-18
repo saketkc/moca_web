@@ -41,6 +41,7 @@
                   $("#spin").html(xhr_data.message);
                 },
                 success: function(xhr_data) {
+                console.log(xhr_data.status);
                     if (xhr_data.status == 'pending') {
                         // continue polling
                         setTimeout(function() { check_status(xhr_data.job_id); }, 5000);
@@ -59,6 +60,7 @@
                         $("#results").toggleClass("hide");
                         console.log(xhr_data.status);
                         $("#results").append("<div>Input: "+ xhr_data.metadata.filename +"</div>");
+                        var index=1;
                         for(var motifkey in xhr_data.motifs){
                             var url=xhr_data.motifs[motifkey];
                             var peaks = xhr_data.peaks;

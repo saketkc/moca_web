@@ -345,7 +345,11 @@ class EncodeProcessor(object):
                 raise RuntimeError(error_messages['calc_cons'], e.args)
 
         static_destination = os.path.join(self.destination_path, 'motif{}'.format(motif))
-        shutil.move(os.path.join(self.destination_path, 'motif{}Combined_plots.png'.format(motif)), static_destination + 'Combined_plots.png')
+        try:
+            shutil.move(os.path.join(self.destination_path, 'motif{}Combined_plots.png'.format(motif)), static_destination + 'Combined_plots.png')
+            shutil.move(os.path.join(self.destination_path, 'motif{}Combined_plots_rc.png'.format(motif)), static_destination + 'Combined_plots_rc.png')
+        except:
+            raise RuntimeError('Error moving files')
 
 
 def get_summary(job_id, meme_file, peaks):

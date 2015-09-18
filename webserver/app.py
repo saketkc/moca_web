@@ -178,8 +178,10 @@ def post_process(async_id, job_id):
     destination_path = os.path.join(STATIC_PATH, job_id)
     try:
         shutil.move(source_path, destination_path)
-    except:
-        pass
+    except Exception as e:
+        #os.remove(destination_path)
+        #shutil.move(source_path, destination_path)
+        raise RuntimeError('Error moving directory: {}'.format(e))
 
 
 def post_process_encode_job(job_id, dataset_id, peakfile_id):
@@ -209,7 +211,7 @@ def job_status(job_id):
     dataset_id = request.args.get('dataset_id')
     peakfile_id = request.args.get('peakfile_id')
     job_db = get_job_status(job_id)
-    status =job_db['status']
+    status = job_db['status']
     if dataset_id:
         job = run_encode_job.AsyncResult(async_id)
     else:
@@ -220,7 +222,7 @@ def job_status(job_id):
 
     if status == 'pending':
         return json.dumps({'status': 'pending', 'job_id':job_id})
-    elif status == 'SUCCESS':
+    elif status == 'success':
         #post_process(async_id, job_id)
         images = ['motif{}Combined_plots.png'.format(i) for i in range(1, N_MEME_MOTIFS+1)]
         if dataset_id:
@@ -230,23 +232,27 @@ def job_status(job_id):
             peaks = summary['peaks']
             sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
             images = ['/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
+            rcimages = ['/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
         else:
-            images = ['/static/jobs/{}/{}'.format(job_id, i) for i in images]
-
             summary = read_summary(job_id)
             motif_occurrences=summary['motif_occurrences']
             peaks = summary['peaks']
             sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
             images = ['/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
+            rcimages = ['/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
             metadata = {'filename': get_filename(async_id)}
         return jsonify(status=job.status,
                        job_id=job_id,
                        motifs=images,
+                       rcimages=rcimages,
                        motif_occurrences=dict(sorted_mo),
                        metadata=metadata,
                        peaks=summary['peaks'])
     else:
         exception_log = job_db['exception_log']
+        if not exception_log:
+            exception_log="{'stderr':'none', 'stdlog':'none', 'output':'none'}"
+        status = 'failure'
         return jsonify(status=status, message=json.loads(exception_log))
 @app.route('/results/<job_id>')
 def results(job_id):
@@ -282,7 +288,8 @@ def encodejobs(dataset_id, peakfile_id):
         peaks = summary['peaks']
         sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
         images = {i:'/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
-        data = ({'motifs':images, 'motif_occurrences': summary['motif_occurrences'], 'peaks': summary['peaks'] })
+        rcimages = {i:'/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
+        data = ({'motifs':images, 'motif_occurrences': summary['motif_occurrences'], 'peaks': summary['peaks'], 'rcimages':rcimages })
         return render_template('encoderesults.html', job_id='none', data=data, metadata=(metadata))#motifs=images, motif_occurrences=summary['motif_occurrences'], peaks=summary['peaks'], job_id='none')
     metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
     if type(metadata) == 'dict' and 'status' in metadata.keys():
