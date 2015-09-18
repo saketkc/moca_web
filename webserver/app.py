@@ -241,8 +241,6 @@ def job_status(job_id):
             images = {i:'/static/jobs/{}/{}Combined_plots.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
             rcimages = {i:'/static/jobs/{}/{}Combined_plots_rc.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
             metadata = {'filename': get_filename(async_id)}
-        print metadata
-        print summary
         return jsonify(status=job.status,
                        job_id=job_id,
                        motifs=images,

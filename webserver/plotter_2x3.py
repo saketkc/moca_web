@@ -340,6 +340,8 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
     ##FIXME This is a big dirty hacl to get thegenerate plots for the Reverse complement logo too
     logo_name =['logo{}.png'.format(motif_number), 'logo_rc{}.png'.format(motif_number)]
     for ln in logo_name:
+        if 'rc'in ln:
+            y_phylop_pixels.reverse()
         logo = plt.imread(os.path.join(meme_dir, ln))
         height_px = logo.shape[0] # Should be 212
 
