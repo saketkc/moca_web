@@ -60,17 +60,32 @@
                         $("#results").toggleClass("hide");
                         console.log(xhr_data.status);
                         $("#results").append("<div>Input: "+ xhr_data.metadata.filename +"</div>");
-                        var index=1;
+                        var index=0;
+                        console.log(xhr_data.motif_occurrences);
                         for(var motifkey in xhr_data.motifs){
                             var url=xhr_data.motifs[motifkey];
+                            var rcurl=xhr_data.rcimages[motifkey];
                             var peaks = xhr_data.peaks;
-                            var num_occur = xhr_data.motif_occurrences.motifkey;
+                            var num_occur = xhr_data.motif_occurrences[motifkey];
+                            console.log(motifkey);
                             var str="<div class='img-container'>"+
-                            "<div class='panel panel-default'><div class='panel-heading clearfix' style='background: grey;'>"+
-                            "<div class='img-text clearfix'><b>Motif "+(Math.floor(index)+1)+"</b>:&nbsp;&nbsp;"+ (Math.floor(num_occur)*100.0/Math.floor(peaks)).toFixed(2) +"% &nbsp;(" + num_occur+"/"+peaks+
-                            ")<a href='"+url+"' download class='link'>"+
-                            "<span title='Download' class='glyphicon glyphicon-download-alt pull-right link' style='color: white;'></span></a></div></div>"+
-                            "<div class='panel-body'><img height='180px' width='100%'  src="+url+"/></div></div></div>";
+                            "<div class='panel panel-default'>"+
+                                "<div class='panel-heading clearfix' style='background: grey;'>"+
+                                    "<div class='img-text clearfix'><b>Motif "+(Math.floor(index)+1)+"</b>:&nbsp;&nbsp;"+ (Math.floor(num_occur)*100.0/Math.floor(peaks)).toFixed(2) +"% &nbsp;(" + num_occur+"/"+peaks+
+                                     ")"+
+                                        "<a href='"+url+"' download class='link'>"+
+                                            "<span title='Download' class='glyphicon glyphicon-download-alt pull-right link' style='color: white;'></span>"+
+                                        "</a>"+
+                                    "</div>"+
+                                "</div>"+
+                                "<div class='panel-body'><img height='180px' class='mainimage' width='100%'  src="+url+"/>"+
+                                    "<img height='180px' width='100%' class='hide rcimage'  src="+rcurl+"/>"+
+                                    "<div class='offset6 center text-center'>"+
+                                        "<button class='btn-primary showrc'>Show RC</button>"+
+                                    "</div>"+
+                                "</div>"+
+                            "</div></div>";
+
                             $("#results").append(str);
                             index+=1;
                         }
@@ -100,6 +115,15 @@
     }
     add_job_to_history(job_id);
     check_status(job_id);
+    $("#results").on("click",".showrc", function(){
+            var images = $(this).parent().parent().children();
+            var mainimage = images[0];
+            var rcimage = images[1];
+            $(mainimage).toggleClass("hide");
+            $(rcimage).toggleClass("hide");
+
+    });
+
     $("#print").click(function(){
         var content = $("#results").html();
         var w = window.open('', 'MoCA Results', 'height=400,width=600');
