@@ -55,10 +55,13 @@ class ProcessJob(object):
     def __init__(self,request, metadata):
         self.job_id = get_unique_job_id()
         self.job_folder = os.path.join(UPLOAD_FOLDER, self.job_id)
-        self.file = request.files['file']
-        self.filename = str(self.file.filename)
-        assert self.filename!=''
-        self.user_filepath = os.path.join(self.job_folder, self.filename)
+        if metadata is None:
+            self.file = request.files['file']
+            self.filename = str(self.file.filename)
+            assert self.filename!=''
+            self.user_filepath = os.path.join(self.job_folder, self.filename)
+        else:
+            self.filename = metadata['title']
         self.metadata = metadata
         self.client_ip = get_client_ip(request)
         self.genome = None
@@ -88,10 +91,11 @@ class ProcessJob(object):
             retcode = subprocess.call(['gunzip', filepath])
             if int(retcode)!=0:
                 raise RuntimeError('Error extracting zip archive')
-            convert_to_scorefile(filepath, file_type)
+            filepath = filepath.replace('.gz','')
+            convert_to_scorefile(filepath)
 
 
-        data = {'job_id': self.job_id, 'genome': self.genome}
+        data = {'job_id': self.job_id, 'genome': self.genome, 'metadata': self.metadata}
         self.async_id = run_job.apply_async([data], )
         insert_new_job(self.job_id, self.async_id, self.filename, self.client_ip)
 
@@ -108,14 +112,14 @@ def run_motif_analysis_job(self, data):
 def run_job(self, data):
     job_id = data['job_id']
     genome = data['genome']
+    metadata = data['metadata']
     try:
-        run_analysis(job_id, genome)
+        run_analysis(job_id, genome, metadata)
         exception_log = None
         result ='success'
     except RuntimeError as e:
         result ='failure'
         args = e.args
-        print 'LENGTH: {}'.format(len(args))
         for x in args:
             print x
         print args[1][1]
@@ -131,7 +135,7 @@ def run_encode_job(self, data):
     genome = data['genome']
     job_id = data['job_id']
     metadata = data['metadata']
-    result = run_analysis(job_id, genome)
+    result = run_analysis(job_id, genome, json.dumps(metadata))
 
     if result:
         insert_encode_job(peakfile_id, dataset_id, metadata)
@@ -155,22 +159,25 @@ def parallel_conservation_analysis(self, encoder_object):
 
 workflow = (run_motif_analysis_job.s() | group(run_conservation_analysis_job.s(motif) for motif in range(1,4)))
 
+def process_job(request, metadata):
+    job = ProcessJob(request,metadata)
+    print '##############'
+    try:
+        job.submit()
+        return job
+    except RuntimeError as e:
+        print e
+        raise RuntimeError('Error:{}'.format(e))
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file(metadata=None):
-    if request.method == 'POST':
-        job = ProcessJob(request,metadata)
-        try:
-            job.submit()
-        except RuntimeError as e:
-            print e
-            return str(e)
+    if request.method == 'GET':
+        return render_template('index.html')
+    else:
+        job = process_job(request, metadata)
         if metadata is None:
             return redirect(url_for('results', job_id=job.job_id))
-        else:
-            return job
-    elif request.method == 'GET':
-        return render_template('index.html')
 
 
 def post_process(async_id, job_id):
@@ -279,9 +286,6 @@ def encode():
 @app.route('/encodejob/<dataset_id>/<peakfile_id>')
 def encodejobs(dataset_id, peakfile_id):
     if encode_job_exists(peakfile_id):
-        print 'Exists'
-        #images = ['motif{}Combined_plots.png'.format(i) for i in range(1, N_MEME_MOTIFS+1)]
-        #images = ['/static/jobs/encode/{}/{}/{}'.format(dataset_id, peakfile_id, i) for i in images]
         summary = read_summary('encode/{}/{}'.format(dataset_id, peakfile_id))
         metadata = json.loads(get_encode_metadata(peakfile_id))
         motif_occurrences=summary['motif_occurrences']
@@ -294,7 +298,7 @@ def encodejobs(dataset_id, peakfile_id):
     metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
     if type(metadata) == 'dict' and 'status' in metadata.keys():
         return json.dumps({'status': 'error', 'response': metadata})
-    job = upload_file(metadata)
+    job = process_job(request, metadata)
     return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
 
 

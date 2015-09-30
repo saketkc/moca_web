@@ -51,7 +51,7 @@ GENOME = ''# '/media/data1/genomes/hg19/fasta/hg19.fa'
 
 class EncodeProcessor(object):
 
-    def __init__(self, job_id, genome):
+    def __init__(self, job_id, genome, metadata):
         self.path = os.path.join(BASE_LOCATION, job_id)
         self.genome = path_config[genome+'_genome']
         self.genome_table = path_config[genome+'_genome_table']
@@ -59,6 +59,7 @@ class EncodeProcessor(object):
         self.total_motifs = None
         self.is_error = False
         self.error_log = None
+        self.metadata = metadata
         self.peak_file = os.path.join(self.path, 'peaks.tsv')
         ##TODO This should be general
         if not os.path.exists(self.destination_path):
@@ -317,10 +318,13 @@ class EncodeProcessor(object):
                     raise RuntimeError(error_messages['calc_cons'], e.args)
 
                 logging.info('###########P100WaySiteConservationRandom End########################')
-
+        metadata = ""
+        if self.metadata:
+            metadata = json.dumps(self.metadata)
+        print 'METADATA: {}'.format(metadata)
         if self.gerp_wig!='':
             try:
-                self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'], motif,
+                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {} -a '{}'".format(software_location['plotter'], motif,
                                                                                                         meme_file,
                                                                                                         stats_files[0][0],
                                                                                                         stats_files[0][1],
@@ -328,19 +332,19 @@ class EncodeProcessor(object):
                                                                                                         stats_files[1][1],
                                                                                                         MOTIF_FLANKING_BASES,
                                                                                                         peak_file,
-                                                                                                        fimo_2_out_enrichment), cwd=self.destination_path)
+                                                                                                        fimo_2_out_enrichment, metadata), cwd=self.destination_path)
             except RuntimeError as e:
                 raise RuntimeError(error_messages['calc_cons'], e.args)
         else:
             try:
-                self.run_subprocess('{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {}'.format(software_location['plotter'],
+                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {} -a '{}'".format(software_location['plotter'],
                                                                                             motif,
                                                                                             meme_file,
                                                                                             stats_files[0][0],
                                                                                             stats_files[0][1],
                                                                                             MOTIF_FLANKING_BASES,
                                                                                             peak_file,
-                                                                                            fimo_2_out_enrichment), cwd=self.destination_path)
+                                                                                            fimo_2_out_enrichment,metadata), cwd=self.destination_path)
             except RuntimeError as e:
                 raise RuntimeError(error_messages['calc_cons'], e.args)
 
@@ -394,8 +398,8 @@ def run_conservation_analysis(encoder_object, motif):
     encoder_object.conservation_analysis(motif)
     return True
 
-def run_analysis(job_id, genome):
-    encoder = EncodeProcessor(job_id, genome)
+def run_analysis(job_id, genome, metadata=None):
+    encoder = EncodeProcessor(job_id, genome, metadata)
     analyse_motif = encoder.motif_analysis()
     with open(encoder.peak_file) as f:
         for i, line in enumerate(f):

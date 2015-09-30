@@ -5,12 +5,16 @@ Generate conservation plots
 from __future__ import division
 import matplotlib
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+plt.rc('font', family='monospace')
+plt.rcParams.update({'axes.titlesize': 'small'})
+plt.rcParams.update({'backend' : 'Agg'})
 import argparse
 import csv
 import sys
 import numpy as np
 from scipy import stats
-import matplotlib.pyplot as plt
 from scipy.stats.stats import pearsonr
 import statsmodels.api as sm
 from Bio import motifs
@@ -20,14 +24,12 @@ from math import log
 import matplotlib.gridspec as gridspec
 from pylab import setp
 from scipy.stats import binom
+from matplotlib.font_manager import FontProperties
 flankingstemcolor='y'
+import json
 
 ENRICHMENT_SEQ_LENGTH = 401
 
-plt.rc('text', usetex=True)
-plt.rc('font', family='monospace')
-plt.rcParams.update({'axes.titlesize': 'small'})
-plt.rcParams.update({'backend' : 'Agg'})
 a=39.33333333
 __scale__ = 1#0.51#2.5
 # Use 'pssm' or 'counts' to score:
@@ -171,7 +173,7 @@ def get_motif_distances(peak_file, fimo_file):
     all_distances = [item for sublist in chr_wise_distances.values() for item in sublist]
     return all_distances
 
-def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, control_phylop_file, sample_gerp_file, control_gerp_file, peak_file, fimo_file):
+def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, control_phylop_file, sample_gerp_file, control_gerp_file, peak_file, fimo_file, annotate):
     handle = open(meme_file)
     records = motifs.parse(handle, 'meme')
     record = records[motif_number-1]
@@ -180,6 +182,11 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
     control_phylo_data = None
     sample_gerp_data = None
     control_gerp_data = None
+    if annotate == "" or annotate == ' ':
+        annotate = None
+    elif annotate:
+        annotate_dict = json.loads(annotate[0])
+
 
     handle =  open(sample_phylop_file, 'r')
     sample_phylo_data = csv.reader(handle, delimiter='\t')
@@ -346,11 +353,19 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         height_px = logo.shape[0] # Should be 212
 
         if sample_gerp_data:
-            total_px = X[-1]+6*height_px+140
-            right = (6*height_px+10+140-0.2*height_px)/total_px
+            if annotate:
+                total_px = X[-1]+6*height_px+140
+                right = (8*height_px+10+140-0.2*height_px)/total_px
+            else:
+                total_px = X[-1]+6*height_px+140
+                right = (6*height_px+10+140-0.2*height_px)/total_px
         else:
-            total_px = X[-1]+4*height_px+140
-            right = (4*height_px+10+140-0.2*height_px)/total_px
+            if annotate:
+                total_px = X[-1]+6*height_px+140
+                right = (6*height_px+10+140-0.2*height_px)/total_px
+            else:
+                total_px = X[-1]+4*height_px+140
+                right = (4*height_px+10+140-0.2*height_px)/total_px
 
         figsize=(total_px/100,(2*height_px)/100+0.6)
 
@@ -454,11 +469,32 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         stem_plot.set_ylabel('$\mathrm{PhyloP}\ \mathrm{Score}$', fontsize=fontsize)
         f.add_subplot(stem_plot)
 
-
         if sample_gerp_data:
-            gs1 =  gridspec.GridSpec(2, 3, height_ratios=[1,4], width_ratios=[1,1,1])
+            if annotate:
+                gs1 =  gridspec.GridSpec(2, 4, height_ratios=[1,4], width_ratios=[1,1,1,1])
+                gerp_header_subplot_gs = gs1[0,1]
+                gerp_subplot_gs = gs1[1,1]
+                histogram_header_subplot_gs = gs1[0,2]
+                histogram_subplot_gs = gs1[1,2]
+                ann_header_subplot_gs = gs1[0,3]
+                ann_subplot_gs = gs1[1,3]
+            else:
+                gs1 =  gridspec.GridSpec(2, 3, height_ratios=[1,4], width_ratios=[1,1,1])
+                gerp_header_subplot_gs = gs1[0,1]
+                gerp_subplot_gs = gs1[1,1]
+                histogram_header_subplot_gs = gs1[0,2]
+                histogram_subplot_gs = gs1[1,2]
         else:
-            gs1 =  gridspec.GridSpec(2, 2, height_ratios=[1,4], width_ratios=[1,1])
+            if annotate:
+                gs1 =  gridspec.GridSpec(2, 3, height_ratios=[1,4], width_ratios=[1,1,1])
+                histogram_header_subplot_gs = gs1[0,1]
+                histogram_subplot_gs = gs1[1,1]
+                ann_header_subplot_gs = gs1[0,2]
+                ann_subplot_gs = gs1[1,2]
+            else:
+                gs1 =  gridspec.GridSpec(2, 2, height_ratios=[1,4], width_ratios=[1,1])
+                histogram_header_subplot_gs = gs1[0,1]
+                histogram_subplot_gs = gs1[1,1]
 
         gs1.update(bottom=0.14, right=0.95, left=1-right*0.85, wspace=0.5)
 
@@ -518,7 +554,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
 
         f.add_subplot(phylop_scatter_plot)
 
-        gerp_plots_leg = plt.Subplot(f, gs1[0,1], autoscale_on=True)
+        gerp_plots_leg = plt.Subplot(f, gerp_header_subplot_gs, autoscale_on=True)
         gerp_plots_leg.set_frame_on(False)
         gerp_plots_leg.set_xticks([])
         gerp_plots_leg.set_yticks([])
@@ -537,7 +573,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
             gerp_plots_leg.text(txtx, txty, textstr, fontsize=legend_fontsize)
             f.add_subplot(gerp_plots_leg)
 
-            gerp_scatter_plot = plt.Subplot(f, gs1[1,1], autoscale_on=True)
+            gerp_scatter_plot = plt.Subplot(f, gerp_subplot_gs, autoscale_on=True)
             gerp_scatter_plot.scatter(motif_scores, motif_sample_gerp_scores, color='g', s=[pointsize for i in motif_scores])
             gerp_scatter_plot.plot(motif_scores, y_reg_gerp_sample, color='g', linewidth=plot_linewidth)
             gerp_scatter_plot.scatter(motif_scores, motif_control_gerp_scores, color=greycolor, s=[pointsize for i in motif_scores])
@@ -564,14 +600,8 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
             gerp_scatter_plot.tick_params('both', length=ticklength, width=2, which='major')
             f.add_subplot(gerp_scatter_plot)
 
-        if sample_gerp_data:
-            histogram_header_subplot = gs1[0,2]
-            histogram_subplot = gs1[1,2]
-        else:
-            histogram_header_subplot = gs1[0,1]
-            histogram_subplot = gs1[1,1]
 
-        enrichment_plot4 = plt.Subplot(f, histogram_header_subplot, autoscale_on=True)
+        enrichment_plot4 = plt.Subplot(f, histogram_header_subplot_gs, autoscale_on=True)
         enrichment_plot4.set_frame_on(False)
         enrichment_plot4.set_xticks([])
         enrichment_plot4.set_yticks([])
@@ -586,11 +616,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         enrichment_pval = 0
         number_of_sites = len(motifs_within_100)+len(motifs_within_100_200) #fimo_sites_intersect(parsed.fimo_file)
         probability = 200/(ENRICHMENT_SEQ_LENGTH-motif_length)
-        #print 'probability: {}'.format(probability)
-        #print 'N: {}'.format(number_of_sites)
-        #print 'Motifs within 100: {}'.format(len(motifs_within_100))
         enrichment_pval=binom.sf(len(motifs_within_100), number_of_sites, probability)
-        print 'p-val: {}'.format(enrichment_pval)
         enrichment_pval = str('%.1g'%enrichment_pval)
         if 'e' in enrichment_pval:
             enrichment_pval+= '}'
@@ -599,7 +625,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         txtx = 0.1*len(textstr)/100.0
         enrichment_plot4.text(txtx, txty, textstr, fontsize=legend_fontsize)
         f.add_subplot(enrichment_plot4)
-        enrichment_plot = plt.Subplot(f, histogram_subplot, autoscale_on=True)
+        enrichment_plot = plt.Subplot(f, histogram_subplot_gs, autoscale_on=True)
         enrichment_plot.hist(all_distances, histogram_nbins, color='white', alpha=0.8, range=[-200,200])
         enrichment_plot.set_xticks([-200,-100,0,100,200])
         max_yticks = 3
@@ -625,6 +651,48 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
         else:
             out_file = os.path.join(fimo_dir,'motif{}Combined_plots_rc.png'.format(motif_number))
             out_file = 'motif{}Combined_plots_rc.png'.format(motif_number)
+
+        if annotate:
+            filename = r'$'+annotate[0]+'$'
+            try:
+                a_motif = r'$'+annotate[1]+'$'
+            except IndexError:
+                a_motif = ''
+            try:
+                cell_line = r'$'+annotate[2]+'$'
+            except IndexError:
+                cell_line = ''
+            try:
+                assay = r'$'+annotate[3]+'$'
+            except IndexError:
+                assay = ''
+
+            #data = [[r'$Filename$', filename], [r'$Motif$', a_motif], [r'$Cell\ Line$', cell_line], [r'Assay', assay]]
+            keys = ['title', 'gene_name']#, 'href']
+            data = [[r'$'+key.replace("_", "")+'$', r'$'+annotate_dict[key]+'$'] for key in keys]
+            ann_header = plt.Subplot(f, ann_header_subplot_gs, autoscale_on=True)
+            ann_header.set_frame_on(False)
+            ann_header.set_xticks([])
+            ann_header.set_yticks([])
+            f.add_subplot(ann_header)
+            textstr = r'$Metadata$'
+            txtx = 1.7*len(textstr)/100.0
+            ann_header.text(txtx, txty, textstr, fontsize=legend_fontsize)
+            ann_plot = plt.Subplot(f, ann_subplot_gs, autoscale_on=True)
+            ann_plot.set_xticks([])
+            ann_plot.set_yticks([])
+            ann_plot.set_frame_on(False)
+            table = ann_plot.table(cellText=data,loc='center')
+            table.scale(1,6)
+            fontproperties=FontProperties(size=legend_fontsize*8)#, family='serif' )
+            for key, cell in table.get_celld().items():
+                row, col = key
+                if row > 0 and col > 0:
+                    cell.set_text_props(fontproperties=fontproperties)
+
+            table.set_fontsize(legend_fontsize*8)
+            f.add_subplot(ann_plot)
+
         f.savefig(out_file, figsize=figsize, dpi=dpi)
 
 def main(argv):
@@ -638,6 +706,7 @@ def main(argv):
     parser.add_argument('-peak', '--peak_file', metavar='<peak_file>', help='Path to peaks file', required=True)
     parser.add_argument('-fimo', '--fimo_file', metavar='<fimo_file>', help='Path to fimo_2_sites output', required=True)
     parser.add_argument('-f', '--flanking_sites', metavar='<flanking_sites>', help='Number of flanking_sites', required=True, type=int)
+    parser.add_argument('-a', '--annotate', metavar='<annotate>', help='Annotate graph wi<motif, filename, date>', required=False, nargs='*')
     parsed = parser.parse_args(argv)
     create_plot(parsed.meme,
                 parsed.motif,
@@ -647,7 +716,8 @@ def main(argv):
                 parsed.gerp_sample,
                 parsed.gerp_control,
                 parsed.peak_file,
-                parsed.fimo_file)
+                parsed.fimo_file,
+                parsed.annotate)
 if __name__ == "__main__":
 
     main(sys.argv[1:])
