@@ -78,7 +78,7 @@ def get_job_metadata(job_id):
 
 def get_encode_metadata(peakfile_id):
     query = EncodeData.query.filter_by(peakfile_id=peakfile_id).first()
-    return query.file_metadata
+    return query.encode_metadata
 
 def get_filename(async_id):
     query = Job.query.filter_by(async_id=async_id).first()

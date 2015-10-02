@@ -38,10 +38,10 @@ class EncodeData(Base):
     run_job_id = Column(String(80), ForeignKey('job.job_id'))
     encode_metadata = Column(Text)
 
-    def __init__(self, peakfile_id=None, dataset_id=None, job_id=None, encode_metadata=None):
+    def __init__(self, peakfile_id=None, dataset_id=None, run_job_id=None, encode_metadata=None):
         self.peakfile_id = peakfile_id
         self.dataset_id = dataset_id
-        self.job_id = job_id
+        self.run_job_id = run_job_id
         self.encode_metadata = json.dumps(encode_metadata)
 
     def __repr__(self):

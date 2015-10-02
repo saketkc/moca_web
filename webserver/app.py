@@ -131,7 +131,7 @@ def run_job(self, data):
         print '**************UPDATE******************************'
         dataset_id = metadata['dataset']
         peakfile_id = metadata['title']
-        insert_encode_job(peakfile_id, dataset_id, metadata)
+        insert_encode_job(peakfile_id, dataset_id, job_id, metadata)
         print '**************UPDATE******************************'
         post_process_encode_job(job_id, dataset_id, peakfile_id)
 
