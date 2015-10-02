@@ -60,6 +60,7 @@ class EncodeProcessor(object):
         self.is_error = False
         self.error_log = None
         self.metadata = metadata
+        self.metadata_file = ''
         self.peak_file = os.path.join(self.path, 'peaks.tsv')
         ##TODO This should be general
         if not os.path.exists(self.destination_path):
@@ -75,6 +76,10 @@ class EncodeProcessor(object):
         self.phylop_wig = phylop_wig
         self.gerp_wig = gerp_wig
         log_file = os.path.join(self.path, 'run.log')
+        if self.metadata:
+            self.metadata_file = os.path.join(self.path, 'metadata.json')
+            with open(self.metadata_file, 'w') as mf:
+                json.dump(self.metadata, mf)
         logging.basicConfig(filename=log_file, level=logging.DEBUG, format=FORMAT, filemode='a')
 
     @staticmethod
@@ -318,13 +323,9 @@ class EncodeProcessor(object):
                     raise RuntimeError(error_messages['calc_cons'], e.args)
 
                 logging.info('###########P100WaySiteConservationRandom End########################')
-        metadata = ""
-        if self.metadata:
-            metadata = json.dumps(self.metadata)
-        print 'METADATA: {}'.format(metadata)
         if self.gerp_wig!='':
             try:
-                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {} -a '{}'".format(software_location['plotter'], motif,
+                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -gs {} -gc {} -f {} -peak {} -fimo {} -a {}".format(software_location['plotter'], motif,
                                                                                                         meme_file,
                                                                                                         stats_files[0][0],
                                                                                                         stats_files[0][1],
@@ -332,19 +333,19 @@ class EncodeProcessor(object):
                                                                                                         stats_files[1][1],
                                                                                                         MOTIF_FLANKING_BASES,
                                                                                                         peak_file,
-                                                                                                        fimo_2_out_enrichment, metadata), cwd=self.destination_path)
+                                                                                                        fimo_2_out_enrichment, self.metadata_file), cwd=self.destination_path)
             except RuntimeError as e:
                 raise RuntimeError(error_messages['calc_cons'], e.args)
         else:
             try:
-                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {} -a '{}'".format(software_location['plotter'],
+                self.run_subprocess("{} -m {} -i {} -ps {} -pc {} -f {} -peak {} -fimo {} -a {}".format(software_location['plotter'],
                                                                                             motif,
                                                                                             meme_file,
                                                                                             stats_files[0][0],
                                                                                             stats_files[0][1],
                                                                                             MOTIF_FLANKING_BASES,
                                                                                             peak_file,
-                                                                                            fimo_2_out_enrichment,metadata), cwd=self.destination_path)
+                                                                                            fimo_2_out_enrichment, self.metadata_file), cwd=self.destination_path)
             except RuntimeError as e:
                 raise RuntimeError(error_messages['calc_cons'], e.args)
 

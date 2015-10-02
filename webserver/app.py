@@ -83,7 +83,6 @@ class ProcessJob(object):
         else:
             self.genome = self.metadata['assembly']
             href = self.metadata['href']
-            file_type = self.metadata['output_type']
             filepath = os.path.join(self.job_folder, href.split('/')[-1])
             retcode = subprocess.call(['wget', '-c', href, '-P', self.job_folder])
             if int(retcode)!=0:
@@ -126,24 +125,15 @@ def run_job(self, data):
         exception_log = {'message': args[0], 'stdout': args[1][1], 'stderr': args[1][2]}
         exception_log = json.dumps(exception_log)
     update_job_status(job_id, result, exception_log)
-
-
-@celery.task(bind=True, base=SqlAlchemyTask)
-def run_encode_job(self, data):
-    dataset_id = data['dataset_id']
-    peakfile_id = data['peakfile_id']
-    genome = data['genome']
-    job_id = data['job_id']
-    metadata = data['metadata']
-    result = run_analysis(job_id, genome, json.dumps(metadata))
-
-    if result:
+    print '**************UPDATE******************************'
+    if metadata:
+        print metadata
+        print '**************UPDATE******************************'
+        dataset_id = metadata['dataset']
+        peakfile_id = metadata['title']
         insert_encode_job(peakfile_id, dataset_id, metadata)
+        print '**************UPDATE******************************'
         post_process_encode_job(job_id, dataset_id, peakfile_id)
-    else:
-        #TODO Log the error
-        pass
-
 
 @celery.task(bind=True)
 def run_conservation_analysis_job(self, encoder_object, motif):
@@ -219,10 +209,7 @@ def job_status(job_id):
     peakfile_id = request.args.get('peakfile_id')
     job_db = get_job_status(job_id)
     status = job_db['status']
-    if dataset_id:
-        job = run_encode_job.AsyncResult(async_id)
-    else:
-        job = run_job.AsyncResult(async_id)
+    job = run_job.AsyncResult(async_id)
     #job = workflow.AsyncResult(async_id)
     #job = run_motif_analysis_job.AsyncResult(async_id)
     print 'JOB STATE: {}'.format(job.state)

@@ -182,10 +182,12 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
     control_phylo_data = None
     sample_gerp_data = None
     control_gerp_data = None
+    annotate_dict = None
     if annotate == "" or annotate == ' ':
         annotate = None
     elif annotate:
-        annotate_dict = json.loads(annotate[0])
+        with open(annotate) as f:
+            annotate_dict = json.load(f)
 
 
     handle =  open(sample_phylop_file, 'r')
@@ -706,7 +708,7 @@ def main(argv):
     parser.add_argument('-peak', '--peak_file', metavar='<peak_file>', help='Path to peaks file', required=True)
     parser.add_argument('-fimo', '--fimo_file', metavar='<fimo_file>', help='Path to fimo_2_sites output', required=True)
     parser.add_argument('-f', '--flanking_sites', metavar='<flanking_sites>', help='Number of flanking_sites', required=True, type=int)
-    parser.add_argument('-a', '--annotate', metavar='<annotate>', help='Annotate graph wi<motif, filename, date>', required=False, nargs='*')
+    parser.add_argument('-a', '--annotate', metavar='<annotate>', help='Path to json file containing annotations', required=False)
     parsed = parser.parse_args(argv)
     create_plot(parsed.meme,
                 parsed.motif,
