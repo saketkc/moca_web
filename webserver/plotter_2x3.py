@@ -356,7 +356,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
 
         if sample_gerp_data:
             if annotate:
-                total_px = X[-1]+6*height_px+140
+                total_px = X[-1]+8*height_px+140
                 right = (8*height_px+10+140-0.2*height_px)/total_px
             else:
                 total_px = X[-1]+6*height_px+140
@@ -670,8 +670,8 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
                 assay = ''
 
             #data = [[r'$Filename$', filename], [r'$Motif$', a_motif], [r'$Cell\ Line$', cell_line], [r'Assay', assay]]
-            keys = ['title', 'gene_name']#, 'href']
-            data = [[r'$'+key.replace("_", "")+'$', r'$'+annotate_dict[key]+'$'] for key in keys]
+            keys = ['title', 'gene_name', 'dataset', 'assembly']
+            data = [[r'$'+key.replace("_", " ").upper()+'$', r'$'+annotate_dict[key]+'$'] for key in keys]
             ann_header = plt.Subplot(f, ann_header_subplot_gs, autoscale_on=True)
             ann_header.set_frame_on(False)
             ann_header.set_xticks([])
@@ -685,7 +685,7 @@ def create_plot(meme_file, motif_number, flanking_sites, sample_phylop_file, con
             ann_plot.set_yticks([])
             ann_plot.set_frame_on(False)
             table = ann_plot.table(cellText=data,loc='center')
-            table.scale(1,6)
+            table.scale(1,2)
             fontproperties=FontProperties(size=legend_fontsize*8)#, family='serif' )
             for key, cell in table.get_celld().items():
                 row, col = key
