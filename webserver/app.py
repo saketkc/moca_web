@@ -188,7 +188,8 @@ def post_process_encode_job(job_id, dataset_id, peakfile_id):
     try:
         shutil.move(source_path, destination_path)
     except:
-        pass
+        os.removedirs(destination_path)
+        shutil.move(source_path, destination_path)
 
 
 def read_summary(job_id):
