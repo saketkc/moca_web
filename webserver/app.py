@@ -79,7 +79,7 @@ class ProcessJob(object):
         if self.metadata is None:
             self.file.save(self.user_filepath)
             peak_filepath = os.path.join(self.job_folder, 'peaks.tsv')
-            convert_to_scorefile(self.user_filepath, filetype=None, out_file=peak_filepath)
+            convert_to_scorefile(self.user_filepath,filetype=None, out_file=peak_filepath)
         else:
             self.genome = self.metadata['assembly']
             href = self.metadata['href']
