@@ -54,6 +54,7 @@ def get_client_ip(request):
 class ProcessJob(object):
     def __init__(self,request, metadata):
         self.job_id = get_unique_job_id()
+
         self.job_folder = os.path.join(UPLOAD_FOLDER, self.job_id)
         if metadata is None:
             self.file = request.files['file']
@@ -74,6 +75,7 @@ class ProcessJob(object):
             os.makedirs(self.job_folder)
         except:
             # Error saving files
+            print 'Error creating folder: {}'.format(self.job_folder)
             raise RuntimeError('Error creating job directory')
 
         if self.metadata is None:
@@ -151,7 +153,6 @@ workflow = (run_motif_analysis_job.s() | group(run_conservation_analysis_job.s(m
 
 def process_job(request, metadata):
     job = ProcessJob(request,metadata)
-    print '##############'
     try:
         job.submit()
         return job
@@ -166,6 +167,8 @@ def upload_file(metadata=None):
         return render_template('index.html')
     else:
         job = process_job(request, metadata)
+        if request.form['format']=='json':
+            return jsonify(job_id=job.job_id)
         if metadata is None:
             return redirect(url_for('results', job_id=job.job_id))
 
