@@ -1,113 +1,114 @@
-filename	link
-K562_NFRKB_A301-459A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b34620c6-b81e-4107-a972-b223a78f2171
-MCF7_GABPalpha_sc-22810_Rep1vsRep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a746042d-3aff-4fbf-a1a3-bb7162e87865
-HepG2_Ski_sc-9140_Rep_2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/8a2a2b5c-e5a8-4c8f-93d3-95a1da28e729
-K562_FOXK2_A301-730A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a53b636d-e695-4e4e-bd94-731d25c9d851
-K562_IKZF1_GTX129438_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/3d1aa06d-1c92-4991-802a-13eaab808e05
-K562_E2F1_3742S_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/09a413d9-daca-467b-ac3c-dc32d0865843
-H1_Neurons_P300_sc-585_RepAll_peaks.quest	http://moca.usc.edu:5000/results/30f5ad5d-2c96-4d4b-a816-09f8662a96db
-K562_E2F1_GTX70165_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/7007434c-748f-4804-a66b-6d916d52ff75
-K562_ASH1_A301-748A_Rep1_Rep2_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/814e4eca-8155-4526-92f0-933bd0a7cada
-K562_SIP1_A302-474A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/06461a86-96dd-4bd0-9d5b-8118ba5a4544
-HepG2_RING1B_5694_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/e4f21f89-b4b0-4938-b7a0-6d110fcd0ce3
-H1_Neurons_Rad21_ab992_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a866bb1b-b086-42fb-a74c-3df467abe153
-MCF-7_CTBP1_C8741_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/55f39790-6273-4e3c-b1c3-5470559a1397
-HeLa-S3_SREBP2_1000-7663_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f57199cd-43b3-4561-b420-48c0688a7e21
-A549_USF2_ab60931_RepAll_peaks.quest	http://moca.usc.edu:5000/results/efd6bcac-ccc0-4386-9800-735e8b008354
-K562_MTA2_A300-396A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/4b5d743d-5bd8-4cd6-a414-d54e2ae11ad7
-A549_RFX5_200-401-194_RepAll_peaks.quest	http://moca.usc.edu:5000/results/025b6627-76c0-4c80-ba3b-4938e0ca6603
-K562_ELF4_A302-659A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/8a2306a6-f348-4182-bb62-65023c4e16fa
-K562_DDX20_A300-650A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2d18e468-db60-47be-9b27-6200068828f5
-A549_PCAF_ab12188_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2e888f1d-5ced-4d16-a880-c5b74a2f5885
-MCF-7_RFX5_200-401-194_RepAll_peaks.quest	http://moca.usc.edu:5000/results/931a734b-e612-431b-9c2e-de69173ec1e0
-H1_Neurons_SMC3_ab9263_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2b7b26ef-79b0-4ba6-b47a-3e4a79b16f8c
-K562_NFATc3_A303-571A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f2fdd8c5-363b-487d-8c15-f6faf6ff98a7
-K562_DPF2_A303-596A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/daf3bbbf-44b5-4250-ba0a-610fb7f05858
-K562_E2F1_GTX101235_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b2ff4d48-4f0d-40de-98db-9b4cacbbbe06
-GM12878_ATF7_HPA003384_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/67ccabb1-41f5-4eb2-97a6-d74516655d98
-K562_NBN_GTX103229_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/d077f2af-fb5b-48fd-b7d0-0c6ec1637f25
-MCF-7_SIN3A_NB600-1263_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/81943b66-2dec-4cd9-9928-a0870e02eba0
-K562_MITF_39789_Rep3vsRep4_RepAll_peaks.quest	http://moca.usc.edu:5000/results/5a5aa6a8-90b9-46f4-a721-8c6c2b75abb4
-MCF-7_Nrf1_ab55744_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/9a312a21-76e5-41d6-b1a5-79cfbb746120
-K562_LEF1_A303-486A_Rep3vsRep4_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2515a3f2-ba2f-4ed6-bf20-15963e4d6fc3
-K562_TAL1_GTX116020_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a2b3ad66-76b7-4f60-b9b9-cc37853b3880
-A549_SIN3A_NB600-1263_RepAll_peaks.quest	http://moca.usc.edu:5000/results/7d393f24-7b6a-4a5c-9655-2dfbc7b26015
-K562_PYGO2_A302-730A_Rep2_Rep3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a9cc9c6e-92f1-413e-8e6d-f44dec01fc5c
-K562_SNIP1_A300-371A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/de7260e0-b44a-4b74-846e-d563dcefcee1
-K562_ZNF282_HPA024374_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a380f248-9719-425a-826d-d113e236065f
-MCF-7_ELK1_1277-1_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/ebd373df-9896-4eee-9c0d-5c6326862777
-GM12878_ZNF143_16618-1-AP_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f9c60d24-eced-4317-b1b4-c3861cb77630
-K562_ATF4_D4B8__11815S_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f89b8700-c4db-4544-975a-212a276153d4
-HeLa-S3_ZCH311A_NB100-74650_RepAll_peaks.quest	http://moca.usc.edu:5000/results/801755ce-f5d5-477f-b4af-d679834f0647
-MCF-7_CREB_48H2__9197S_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/5a34e5de-353d-405c-92f2-0d6fa903e375
-A549_ZFP36_T5327_RepAll_peaks.quest	http://moca.usc.edu:5000/results/26d3f83b-9bdd-4d05-bbf3-a444159909af
-GM12878_ZNF143_16618-1-AP_RepAll_peaks.quest	http://moca.usc.edu:5000/results/92f0a80b-e6ce-4d83-9374-84f71e8b5f01
-K562_ARNT_A302-765A_Rep1vs2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/d59769e3-02c0-4ca7-a1a7-a71fd7b8bf80
-MCF-7_CoREST_H-65__sc-30189_Rep3_Rep4_RepAll_peaks.quest	http://moca.usc.edu:5000/results/be25f6f7-1627-474e-9673-5c9a70b10528
-GM12878_SUZ12_3737s_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2994dd00-0e51-4c8a-a8b2-7585c128371d
-HepG2_RFX1_sc-10652_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b1f3fd51-5d94-42ab-8def-8dd75db031f4
-MCF-7_RFX1_sc-10650_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/6df1ec35-89e6-4ea0-a6cd-aa2c3315fa98
-K562_ZNF24_A303-091A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b0ce1a2f-be90-43f1-8c2c-cc59e6ba462d
-K562_Rad51[N1C2]_GTX100469_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/230605e7-6c7b-4796-8522-20f2407d0474
-GM12878_STAT1_sc345_RepAll_peaks.quest	http://moca.usc.edu:5000/results/6482df96-1a0e-4b7f-a014-a594427e974f
-A549_SREBP2_1000-7663_RepAll_peaks.quest	http://moca.usc.edu:5000/results/965479bc-a67c-406e-81d6-cbd69a03bc8a
-K562_UTY_HPA001165_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/613a6286-c815-47b3-8bca-4a8ffd7af61a
-K562_E2F8_A303-039A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b3cf2046-9777-4757-a7f5-821e4e084eb8
-K562_ZBTB40_A301-932A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f23b2d90-d026-4b21-81f1-e213f489e635
-MCF-7_NONO_N8664_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/0776a238-7941-4c7c-ac62-b167221a49d6
-K562_HES1_GTX108356_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a97cb97a-99e4-44d1-8bec-37a5e9d60ea0
-K562_CREB3L1_HPA024069_RepAll_peaks.quest	http://moca.usc.edu:5000/results/84117595-8025-445b-be9f-4dac97517776
-K562_SIP1_A302-473A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/821d8b8e-c479-49a1-b726-e908581f5a9b
-GM12878_TRIM22_HPA003575_RepAll_peaks.quest	http://moca.usc.edu:5000/results/91afbb79-31ec-4040-8b34-f133c61a7c15
-K562_DR1_A301-866A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/cf4714b9-f1a4-454c-b4b0-0d7d7bc63813
-MCF-7_SREBP1_sc-8984_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/e3447f93-757e-4119-9082-73d0dca08cf5
-K562_NCoR_A301-146A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a67ca751-351b-4025-b2f2-79ad84ed8dcb
-HepG2_Ski_sc-9140_RepAll_peaks.quest	http://moca.usc.edu:5000/results/040b1bf7-97a3-4122-bb2b-66f6fa2fede5
-MCF-7_cJun_sc-1694_RepAll_peaks.quest	http://moca.usc.edu:5000/results/cf303f4f-7de0-4023-a5b6-bdfe057447c9
-GM12878_Rb_9313_RepAll_peaks.quest	http://moca.usc.edu:5000/results/5f0411a4-d75b-4862-a4b6-70847240ee66
-K562_NR2F1_GTX114835_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/bc3693a5-e097-4eb6-a939-c8a5ffd2046e
-K562_SOX6_HPA001923_RepAll_peaks.quest	http://moca.usc.edu:5000/results/023af0ea-d624-48f4-989d-6b09042597ca
-MCF-7_ATF7_HPA003384_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/e8be52d5-0f61-4610-8a8d-0e99636c560f
-K562_E4F1_A300-832A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/6107f469-4499-471b-9652-1b301def61c0
-HeLa-S3_UBF_sc-13125_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2c649444-c9f0-43b7-b2c1-3231961406e7
-K562_POLR2B_61557_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a1f28b3c-276b-43bf-909e-f2fc646bb7fb
-A549_MafK_ab50322_RepAll_peaks.quest	http://moca.usc.edu:5000/results/24fa9aeb-3690-4e7b-83ba-2d67734162af
-MCF-7_FOXA1_GTX100308_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b27219fe-db68-499f-8cc3-e81c2be03f04
-K562_RFX1_sc-10652_Rep3_Rep4_RepAll_peaks.quest	http://moca.usc.edu:5000/results/25e28a70-ca83-47cd-b01a-683e177921a3
-K562_MTA2_A300-395A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/3d19a38a-bbaa-41c4-bde5-aba3850c1949
-GM12878_SUZ12_3737_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2d0b1b75-c9f9-4b55-b268-1c8d28f74de3
-A549_SREBP1_sc-8984_RepAll_peaks.quest	http://moca.usc.edu:5000/results/3bf9b2de-248f-4c15-a37b-8560a8264f22
-MCF-7_HCFC1_NB100-68209_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/edddc099-6ba7-4fa6-9f58-9a152df19a2d
-MCF-7_ZKSCAN1_HPA006672_Rep3_Rep4_RepAll_peaks.quest	http://moca.usc.edu:5000/results/daa5086e-dd02-4c0c-ab09-b74e38ae9dba
-K562_HDGF_A303-169A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a919954b-7ac5-4b03-a8ca-e95afb31a98f
-K562_DPF2_A303-595A_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/7ad299c6-053d-4966-bdb6-7d01a2950b2a
-K562_HoxB4_sc-365927_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/a3396af2-0a23-4ed0-9483-14637f98b76d
-K562_SKIL_HPA008472_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/d057fc94-f2c0-4a1f-b090-fd3ae5e1a279
-GM12878_KLF5_HPA040398_RepAll_peaks.quest	http://moca.usc.edu:5000/results/d1864be8-e033-4a0c-a22c-cdac3ad8ad41
-K562_YB1_A303-230A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2e268635-deba-4e7f-85d4-68baa7cba274
-HepG2_RINGB_5694_RepAll_peaks.quest	http://moca.usc.edu:5000/results/ccd7f1fd-5e8a-4c1b-b46d-a651a0ca94da
-MCF7_FOS_sc-7202_Rep1-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/03c40e64-0c3a-40fa-88b6-f4224bb05178
-GM12878_IRF3_sc-9082_RepAll_peaks.quest	http://moca.usc.edu:5000/results/f6297dde-f926-467c-af85-1a533cc17154
-A549_ZC3H11A_NB100-74650_RepAll_peaks.quest	http://moca.usc.edu:5000/results/94c768d3-a827-4f86-a1a0-b15f0d27db28
-GM12878_ZNF207_HPA017013_RepAll_peaks.quest	http://moca.usc.edu:5000/results/0dcf6862-d982-4860-beb8-b1461ea91b41
-K562_FOXK2_A301-729A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/1bc35c12-fae4-473e-bf47-f96e0e0b3c74
-K562_MLLT1_A302-268A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/119450b9-0a05-4b56-acae-1b2685f05ca8
-K562_ATF2_A301-649A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/09ebcf2b-6f88-49e9-ae3e-d9cafe66b2cf
-K562_TDP43_T1705_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/cad8b8ad-4955-4c21-ab5c-6f8628e11e86
-MCF-7_RFX1_sc-10652_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/b40e0c25-5d27-450b-8893-ad2750901984
-K562_ZNF24_HPA024062_Rep2-3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/bb1ebc35-150c-4fef-8142-a46711c92514
-K562_MLLT1_A302-267A_Rep1-2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/45a985ae-8a6a-4d4f-83c9-e92f98cde7a0
-GM12878_GABPalpha_sc-22810_Rep1vsRep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/7483389e-838a-4a3e-ab31-b077885e56ec
-MCF-7_CHD1_NB100-60411_Rep1_Rep3_RepAll_peaks.quest	http://moca.usc.edu:5000/results/3e20c8db-426c-4955-9e81-5eacb7d2b5a9
-GM12878_T-bet_TBX21_D6N8B__13232S_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/1754c721-9808-4dd0-a603-64091352fe32
-GM12878_RING1B_5694_RepAll_peaks.quest	http://moca.usc.edu:5000/results/3cb98a92-7d9d-4805-aa9f-3cb5b2936a61
-K562_FOXM1_GTX102170_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/6c385258-b092-4b40-acd2-405d8f952304
-K562_ZNF24_HPA024062__RepAll_peaks.quest	http://moca.usc.edu:5000/results/d5876463-1df5-4c59-9d4d-1d30c4cae4be
-H1_Neurons_Mxi1_AF4185_RepAll_peaks.quest	http://moca.usc.edu:5000/results/2c5cab51-251c-4806-baa9-bfa26b4496a2
-K562_Oct4_2750_RepAll_peaks.quest	http://moca.usc.edu:5000/results/89eed7d8-0877-4001-b87c-6d0ed668d65f
-GM12878_DEC1_NB100-1800_RepAll_peaks.quest	http://moca.usc.edu:5000/results/99ca2870-6556-4789-a988-e0348b76cf02
-MCF-7_MNT_sc-769_RepAll_peaks.quest	http://moca.usc.edu:5000/results/77fede54-867e-419f-abe4-dbb541945113
-HepG2_FOXA2_HNF3-beta_D56D6__8186S_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/15cfa55d-5e6f-49e0-ac0a-54c84db94354
-HepG2_MNT_sc-769_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/14c5fbfe-6513-44bb-96c6-3a5cf30fc939
-K562_PKNOX1_GTX114991_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/1eabff22-8e2c-4342-8be9-a435bde747ca
-MCF-7_MTA3_HPA039433_Rep1_Rep2_RepAll_peaks.quest	http://moca.usc.edu:5000/results/8c7fc996-64a1-442a-a0b2-a80184a2d49d
+| filename                                                        | link                                                                  | 
+|-----------------------------------------------------------------|-----------------------------------------------------------------------| 
+| K562_NFRKB_A301-459A_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/b34620c6-b81e-4107-a972-b223a78f2171 | 
+| MCF7_GABPalpha_sc-22810_Rep1vsRep2_RepAll_peaks.quest           | http://moca.usc.edu:5000/results/a746042d-3aff-4fbf-a1a3-bb7162e87865 | 
+| HepG2_Ski_sc-9140_Rep_2-3_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/8a2a2b5c-e5a8-4c8f-93d3-95a1da28e729 | 
+| K562_FOXK2_A301-730A_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/a53b636d-e695-4e4e-bd94-731d25c9d851 | 
+| K562_IKZF1_GTX129438_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/3d1aa06d-1c92-4991-802a-13eaab808e05 | 
+| K562_E2F1_3742S_Rep1_Rep2_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/09a413d9-daca-467b-ac3c-dc32d0865843 | 
+| H1_Neurons_P300_sc-585_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/30f5ad5d-2c96-4d4b-a816-09f8662a96db | 
+| K562_E2F1_GTX70165_Rep1_Rep2_RepAll_peaks.quest                 | http://moca.usc.edu:5000/results/7007434c-748f-4804-a66b-6d916d52ff75 | 
+| K562_ASH1_A301-748A_Rep1_Rep2_Rep2_RepAll_peaks.quest           | http://moca.usc.edu:5000/results/814e4eca-8155-4526-92f0-933bd0a7cada | 
+| K562_SIP1_A302-474A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/06461a86-96dd-4bd0-9d5b-8118ba5a4544 | 
+| HepG2_RING1B_5694_Rep1-3_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/e4f21f89-b4b0-4938-b7a0-6d110fcd0ce3 | 
+| H1_Neurons_Rad21_ab992_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/a866bb1b-b086-42fb-a74c-3df467abe153 | 
+| MCF-7_CTBP1_C8741_Rep1_Rep2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/55f39790-6273-4e3c-b1c3-5470559a1397 | 
+| HeLa-S3_SREBP2_1000-7663_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/f57199cd-43b3-4561-b420-48c0688a7e21 | 
+| A549_USF2_ab60931_RepAll_peaks.quest                            | http://moca.usc.edu:5000/results/efd6bcac-ccc0-4386-9800-735e8b008354 | 
+| K562_MTA2_A300-396A_Rep1-2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/4b5d743d-5bd8-4cd6-a414-d54e2ae11ad7 | 
+| A549_RFX5_200-401-194_RepAll_peaks.quest                        | http://moca.usc.edu:5000/results/025b6627-76c0-4c80-ba3b-4938e0ca6603 | 
+| K562_ELF4_A302-659A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/8a2306a6-f348-4182-bb62-65023c4e16fa | 
+| K562_DDX20_A300-650A_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/2d18e468-db60-47be-9b27-6200068828f5 | 
+| A549_PCAF_ab12188_RepAll_peaks.quest                            | http://moca.usc.edu:5000/results/2e888f1d-5ced-4d16-a880-c5b74a2f5885 | 
+| MCF-7_RFX5_200-401-194_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/931a734b-e612-431b-9c2e-de69173ec1e0 | 
+| H1_Neurons_SMC3_ab9263_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/2b7b26ef-79b0-4ba6-b47a-3e4a79b16f8c | 
+| K562_NFATc3_A303-571A_Rep1_Rep2_RepAll_peaks.quest              | http://moca.usc.edu:5000/results/f2fdd8c5-363b-487d-8c15-f6faf6ff98a7 | 
+| K562_DPF2_A303-596A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/daf3bbbf-44b5-4250-ba0a-610fb7f05858 | 
+| K562_E2F1_GTX101235_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/b2ff4d48-4f0d-40de-98db-9b4cacbbbe06 | 
+| GM12878_ATF7_HPA003384_Rep1_Rep2_RepAll_peaks.quest             | http://moca.usc.edu:5000/results/67ccabb1-41f5-4eb2-97a6-d74516655d98 | 
+| K562_NBN_GTX103229_Rep1_Rep2_RepAll_peaks.quest                 | http://moca.usc.edu:5000/results/d077f2af-fb5b-48fd-b7d0-0c6ec1637f25 | 
+| MCF-7_SIN3A_NB600-1263_Rep1-3_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/81943b66-2dec-4cd9-9928-a0870e02eba0 | 
+| K562_MITF_39789_Rep3vsRep4_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/5a5aa6a8-90b9-46f4-a721-8c6c2b75abb4 | 
+| MCF-7_Nrf1_ab55744_Rep1-3_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/9a312a21-76e5-41d6-b1a5-79cfbb746120 | 
+| K562_LEF1_A303-486A_Rep3vsRep4_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/2515a3f2-ba2f-4ed6-bf20-15963e4d6fc3 | 
+| K562_TAL1_GTX116020_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/a2b3ad66-76b7-4f60-b9b9-cc37853b3880 | 
+| A549_SIN3A_NB600-1263_RepAll_peaks.quest                        | http://moca.usc.edu:5000/results/7d393f24-7b6a-4a5c-9655-2dfbc7b26015 | 
+| K562_PYGO2_A302-730A_Rep2_Rep3_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/a9cc9c6e-92f1-413e-8e6d-f44dec01fc5c | 
+| K562_SNIP1_A300-371A_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/de7260e0-b44a-4b74-846e-d563dcefcee1 | 
+| K562_ZNF282_HPA024374_Rep1_Rep2_RepAll_peaks.quest              | http://moca.usc.edu:5000/results/a380f248-9719-425a-826d-d113e236065f | 
+| MCF-7_ELK1_1277-1_Rep1-3_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/ebd373df-9896-4eee-9c0d-5c6326862777 | 
+| GM12878_ZNF143_16618-1-AP_Rep2-3_RepAll_peaks.quest             | http://moca.usc.edu:5000/results/f9c60d24-eced-4317-b1b4-c3861cb77630 | 
+| K562_ATF4_D4B8__11815S_Rep1_Rep2_RepAll_peaks.quest             | http://moca.usc.edu:5000/results/f89b8700-c4db-4544-975a-212a276153d4 | 
+| HeLa-S3_ZCH311A_NB100-74650_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/801755ce-f5d5-477f-b4af-d679834f0647 | 
+| MCF-7_CREB_48H2__9197S_Rep1_Rep2_RepAll_peaks.quest             | http://moca.usc.edu:5000/results/5a34e5de-353d-405c-92f2-0d6fa903e375 | 
+| A549_ZFP36_T5327_RepAll_peaks.quest                             | http://moca.usc.edu:5000/results/26d3f83b-9bdd-4d05-bbf3-a444159909af | 
+| GM12878_ZNF143_16618-1-AP_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/92f0a80b-e6ce-4d83-9374-84f71e8b5f01 | 
+| K562_ARNT_A302-765A_Rep1vs2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/d59769e3-02c0-4ca7-a1a7-a71fd7b8bf80 | 
+| MCF-7_CoREST_H-65__sc-30189_Rep3_Rep4_RepAll_peaks.quest        | http://moca.usc.edu:5000/results/be25f6f7-1627-474e-9673-5c9a70b10528 | 
+| GM12878_SUZ12_3737s_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/2994dd00-0e51-4c8a-a8b2-7585c128371d | 
+| HepG2_RFX1_sc-10652_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/b1f3fd51-5d94-42ab-8def-8dd75db031f4 | 
+| MCF-7_RFX1_sc-10650_Rep1-3_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/6df1ec35-89e6-4ea0-a6cd-aa2c3315fa98 | 
+| K562_ZNF24_A303-091A_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/b0ce1a2f-be90-43f1-8c2c-cc59e6ba462d | 
+| K562_Rad51[N1C2]_GTX100469_Rep1_Rep2_RepAll_peaks.quest         | http://moca.usc.edu:5000/results/230605e7-6c7b-4796-8522-20f2407d0474 | 
+| GM12878_STAT1_sc345_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/6482df96-1a0e-4b7f-a014-a594427e974f | 
+| A549_SREBP2_1000-7663_RepAll_peaks.quest                        | http://moca.usc.edu:5000/results/965479bc-a67c-406e-81d6-cbd69a03bc8a | 
+| K562_UTY_HPA001165_Rep2-3_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/613a6286-c815-47b3-8bca-4a8ffd7af61a | 
+| K562_E2F8_A303-039A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/b3cf2046-9777-4757-a7f5-821e4e084eb8 | 
+| K562_ZBTB40_A301-932A_Rep1_Rep2_RepAll_peaks.quest              | http://moca.usc.edu:5000/results/f23b2d90-d026-4b21-81f1-e213f489e635 | 
+| MCF-7_NONO_N8664_Rep1_Rep2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/0776a238-7941-4c7c-ac62-b167221a49d6 | 
+| K562_HES1_GTX108356_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/a97cb97a-99e4-44d1-8bec-37a5e9d60ea0 | 
+| K562_CREB3L1_HPA024069_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/84117595-8025-445b-be9f-4dac97517776 | 
+| K562_SIP1_A302-473A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/821d8b8e-c479-49a1-b726-e908581f5a9b | 
+| GM12878_TRIM22_HPA003575_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/91afbb79-31ec-4040-8b34-f133c61a7c15 | 
+| K562_DR1_A301-866A_Rep1_Rep2_RepAll_peaks.quest                 | http://moca.usc.edu:5000/results/cf4714b9-f1a4-454c-b4b0-0d7d7bc63813 | 
+| MCF-7_SREBP1_sc-8984_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/e3447f93-757e-4119-9082-73d0dca08cf5 | 
+| K562_NCoR_A301-146A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/a67ca751-351b-4025-b2f2-79ad84ed8dcb | 
+| HepG2_Ski_sc-9140_RepAll_peaks.quest                            | http://moca.usc.edu:5000/results/040b1bf7-97a3-4122-bb2b-66f6fa2fede5 | 
+| MCF-7_cJun_sc-1694_RepAll_peaks.quest                           | http://moca.usc.edu:5000/results/cf303f4f-7de0-4023-a5b6-bdfe057447c9 | 
+| GM12878_Rb_9313_RepAll_peaks.quest                              | http://moca.usc.edu:5000/results/5f0411a4-d75b-4862-a4b6-70847240ee66 | 
+| K562_NR2F1_GTX114835_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/bc3693a5-e097-4eb6-a939-c8a5ffd2046e | 
+| K562_SOX6_HPA001923_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/023af0ea-d624-48f4-989d-6b09042597ca | 
+| MCF-7_ATF7_HPA003384_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/e8be52d5-0f61-4610-8a8d-0e99636c560f | 
+| K562_E4F1_A300-832A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/6107f469-4499-471b-9652-1b301def61c0 | 
+| HeLa-S3_UBF_sc-13125_RepAll_peaks.quest                         | http://moca.usc.edu:5000/results/2c649444-c9f0-43b7-b2c1-3231961406e7 | 
+| K562_POLR2B_61557_Rep1_Rep2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/a1f28b3c-276b-43bf-909e-f2fc646bb7fb | 
+| A549_MafK_ab50322_RepAll_peaks.quest                            | http://moca.usc.edu:5000/results/24fa9aeb-3690-4e7b-83ba-2d67734162af | 
+| MCF-7_FOXA1_GTX100308_Rep1_Rep2_RepAll_peaks.quest              | http://moca.usc.edu:5000/results/b27219fe-db68-499f-8cc3-e81c2be03f04 | 
+| K562_RFX1_sc-10652_Rep3_Rep4_RepAll_peaks.quest                 | http://moca.usc.edu:5000/results/25e28a70-ca83-47cd-b01a-683e177921a3 | 
+| K562_MTA2_A300-395A_Rep1-2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/3d19a38a-bbaa-41c4-bde5-aba3850c1949 | 
+| GM12878_SUZ12_3737_Rep2-3_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/2d0b1b75-c9f9-4b55-b268-1c8d28f74de3 | 
+| A549_SREBP1_sc-8984_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/3bf9b2de-248f-4c15-a37b-8560a8264f22 | 
+| MCF-7_HCFC1_NB100-68209_Rep1-3_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/edddc099-6ba7-4fa6-9f58-9a152df19a2d | 
+| MCF-7_ZKSCAN1_HPA006672_Rep3_Rep4_RepAll_peaks.quest            | http://moca.usc.edu:5000/results/daa5086e-dd02-4c0c-ab09-b74e38ae9dba | 
+| K562_HDGF_A303-169A_Rep1-2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/a919954b-7ac5-4b03-a8ca-e95afb31a98f | 
+| K562_DPF2_A303-595A_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/7ad299c6-053d-4966-bdb6-7d01a2950b2a | 
+| K562_HoxB4_sc-365927_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/a3396af2-0a23-4ed0-9483-14637f98b76d | 
+| K562_SKIL_HPA008472_Rep2-3_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/d057fc94-f2c0-4a1f-b090-fd3ae5e1a279 | 
+| GM12878_KLF5_HPA040398_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/d1864be8-e033-4a0c-a22c-cdac3ad8ad41 | 
+| K562_YB1_A303-230A_Rep1-2_RepAll_peaks.quest                    | http://moca.usc.edu:5000/results/2e268635-deba-4e7f-85d4-68baa7cba274 | 
+| HepG2_RINGB_5694_RepAll_peaks.quest                             | http://moca.usc.edu:5000/results/ccd7f1fd-5e8a-4c1b-b46d-a651a0ca94da | 
+| MCF7_FOS_sc-7202_Rep1-3_RepAll_peaks.quest                      | http://moca.usc.edu:5000/results/03c40e64-0c3a-40fa-88b6-f4224bb05178 | 
+| GM12878_IRF3_sc-9082_RepAll_peaks.quest                         | http://moca.usc.edu:5000/results/f6297dde-f926-467c-af85-1a533cc17154 | 
+| A549_ZC3H11A_NB100-74650_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/94c768d3-a827-4f86-a1a0-b15f0d27db28 | 
+| GM12878_ZNF207_HPA017013_RepAll_peaks.quest                     | http://moca.usc.edu:5000/results/0dcf6862-d982-4860-beb8-b1461ea91b41 | 
+| K562_FOXK2_A301-729A_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/1bc35c12-fae4-473e-bf47-f96e0e0b3c74 | 
+| K562_MLLT1_A302-268A_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/119450b9-0a05-4b56-acae-1b2685f05ca8 | 
+| K562_ATF2_A301-649A_Rep1-2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/09ebcf2b-6f88-49e9-ae3e-d9cafe66b2cf | 
+| K562_TDP43_T1705_Rep2-3_RepAll_peaks.quest                      | http://moca.usc.edu:5000/results/cad8b8ad-4955-4c21-ab5c-6f8628e11e86 | 
+| MCF-7_RFX1_sc-10652_Rep1_Rep2_RepAll_peaks.quest                | http://moca.usc.edu:5000/results/b40e0c25-5d27-450b-8893-ad2750901984 | 
+| K562_ZNF24_HPA024062_Rep2-3_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/bb1ebc35-150c-4fef-8142-a46711c92514 | 
+| K562_MLLT1_A302-267A_Rep1-2_RepAll_peaks.quest                  | http://moca.usc.edu:5000/results/45a985ae-8a6a-4d4f-83c9-e92f98cde7a0 | 
+| GM12878_GABPalpha_sc-22810_Rep1vsRep2_RepAll_peaks.quest        | http://moca.usc.edu:5000/results/7483389e-838a-4a3e-ab31-b077885e56ec | 
+| MCF-7_CHD1_NB100-60411_Rep1_Rep3_RepAll_peaks.quest             | http://moca.usc.edu:5000/results/3e20c8db-426c-4955-9e81-5eacb7d2b5a9 | 
+| GM12878_T-bet_TBX21_D6N8B__13232S_Rep1_Rep2_RepAll_peaks.quest  | http://moca.usc.edu:5000/results/1754c721-9808-4dd0-a603-64091352fe32 | 
+| GM12878_RING1B_5694_RepAll_peaks.quest                          | http://moca.usc.edu:5000/results/3cb98a92-7d9d-4805-aa9f-3cb5b2936a61 | 
+| K562_FOXM1_GTX102170_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/6c385258-b092-4b40-acd2-405d8f952304 | 
+| K562_ZNF24_HPA024062__RepAll_peaks.quest                        | http://moca.usc.edu:5000/results/d5876463-1df5-4c59-9d4d-1d30c4cae4be | 
+| H1_Neurons_Mxi1_AF4185_RepAll_peaks.quest                       | http://moca.usc.edu:5000/results/2c5cab51-251c-4806-baa9-bfa26b4496a2 | 
+| K562_Oct4_2750_RepAll_peaks.quest                               | http://moca.usc.edu:5000/results/89eed7d8-0877-4001-b87c-6d0ed668d65f | 
+| GM12878_DEC1_NB100-1800_RepAll_peaks.quest                      | http://moca.usc.edu:5000/results/99ca2870-6556-4789-a988-e0348b76cf02 | 
+| MCF-7_MNT_sc-769_RepAll_peaks.quest                             | http://moca.usc.edu:5000/results/77fede54-867e-419f-abe4-dbb541945113 | 
+| HepG2_FOXA2_HNF3-beta_D56D6__8186S_Rep1_Rep2_RepAll_peaks.quest | http://moca.usc.edu:5000/results/15cfa55d-5e6f-49e0-ac0a-54c84db94354 | 
+| HepG2_MNT_sc-769_Rep1_Rep2_RepAll_peaks.quest                   | http://moca.usc.edu:5000/results/14c5fbfe-6513-44bb-96c6-3a5cf30fc939 | 
+| K562_PKNOX1_GTX114991_Rep1_Rep2_RepAll_peaks.quest              | http://moca.usc.edu:5000/results/1eabff22-8e2c-4342-8be9-a435bde747ca | 
+| MCF-7_MTA3_HPA039433_Rep1_Rep2_RepAll_peaks.quest               | http://moca.usc.edu:5000/results/8c7fc996-64a1-442a-a0b2-a80184a2d49d | 
