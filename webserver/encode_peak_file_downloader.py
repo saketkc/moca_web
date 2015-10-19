@@ -22,6 +22,7 @@ def get_encode_peakfiles(encode_id):
     files_to_download = []
     for f in files:
         file_type = f['file_type']
+        file_status = f['status']
         if file_type in ALLOWED_FILETYPES:
             dataset = f['dataset']
             dataset = dataset.replace('experiments','').replace('/','')
@@ -50,7 +51,8 @@ def get_encode_peakfiles(encode_id):
                                       'biosample_term_name': biosample_term_name,
                                       'assay_term_name': assay_term_name,
                                       'gene_name': gene_name,
-                                      'description': description})
+                                      'description': description,
+                                      'file_status': file_status})
     return files_to_download
 
 def get_metadata_for_peakfile(dataset, peakfile):
@@ -67,6 +69,7 @@ def get_metadata_for_peakfile(dataset, peakfile):
         return response_json
     for f in files:
         title = f['title']
+        file_status = f['status']
         if title == peakfile:
             assembly = f['assembly']
             href = __base_url__ + f['href']
@@ -89,7 +92,8 @@ def get_metadata_for_peakfile(dataset, peakfile):
                     'biosample_term_name': biosample_term_name,
                     'assay_term_name': assay_term_name,
                     'gene_name': gene_name,
-                    'description': description
+                    'description': description,
+                    'file_status': file_status,
                     }
 
     return None
