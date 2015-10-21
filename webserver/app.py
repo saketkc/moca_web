@@ -15,7 +15,8 @@ from bed_operations.format_peakfile import convert_to_scorefile
 from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists
 from database import SqlAlchemyTask
 import operator
-
+from Bio import motifs
+jaspar_motifs = motifs.parse(open('../data/pfm_vertebrates.txt'), 'jaspar')
 
 server_config = read_config('Server')
 path_config = read_config('StaticPaths')
@@ -297,6 +298,14 @@ def encodejobs(dataset_id, peakfile_id):
     job = process_job(request, metadata)
     return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
 
+@app.route('/jaspar/<tf_name>')
+def jasper_search(tf_name):
+    for m in jaspar_motifs:
+        if m.name.lower() == tf_name.lower():
+            fn = os.path.join(STATIC_PATH, 'logos', m.name+'.png')
+            m.weblogo(fn,  show_errorbars=False, logo_title=m.name,  show_fineprint=False )
+            return jsonify(path=m.name+'.png', status='success')
+    return jsonify(status='error')
 
 
 if __name__ == '__main__':

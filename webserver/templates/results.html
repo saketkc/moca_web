@@ -59,7 +59,7 @@
                     else {
                         $("#results").toggleClass("hide");
                         console.log(xhr_data.status);
-                        $("#results").append("<div>Input: "+ xhr_data.metadata.filename +"</div>");
+                        $("#results").append("<div class='span4 offset4' style='text-align: center'><b>Input:</b> "+ xhr_data.metadata.filename +"<br/><br/><div class='jasparcontent'><input type='text' id='searchjaspar'/><button class='btn-primary showjaspar'>Search Jaspar(Curated Motif DB)</button><div class='jasparimage'></div></div><br/><br/>");
                         var index=0;
                         console.log(xhr_data.motif_occurrences);
                         for(var m in xhr_data.motifs){
@@ -123,6 +123,24 @@
             $(mainimage).toggleClass("hide");
             $(rcimage).toggleClass("hide");
 
+    });
+    $("#results").on("click",".showjaspar", function(){
+            var content = $("#searchjaspar").val();
+            $.ajax({
+                url: '/jaspar/'+content,
+                dataType: 'json',
+                error: function(xhr_data) {
+                  $("#spin").html(xhr_data.message);
+                },
+                success: function(xhr_data) {
+                console.log(xhr_data);
+                var url = "/static/jobs/logos/"+xhr_data.path;
+                console.log(url);
+                var str= "<div class='panel-body'><img class='mainimage' src="+url+"/>"+
+                "</div>";
+                $(".jasparimage").html(str);
+                }
+            });
     });
 
     $("#print").click(function(){
