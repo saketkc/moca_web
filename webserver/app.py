@@ -229,6 +229,7 @@ def job_status(job_id):
             motif_occurrences=summary['motif_occurrences']
             peaks = summary['peaks']
             sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
+            motifs = [i for i,j in sorted_mo if float(j)/peaks>0.1]
             images = ['/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
             rcimages = ['/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
         else:
@@ -237,11 +238,15 @@ def job_status(job_id):
             peaks = summary['peaks']
             sorted_mo = sorted(motif_occurrences.items(), key=operator.itemgetter(1), reverse=True)
             images = {i:'/static/jobs/{}/{}Combined_plots.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
+            motifs = [i for i,j in sorted_mo if float(j)/peaks>0.1]
+            #images = ['/static/jobs/{}/{}Combined_plots.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
             rcimages = {i:'/static/jobs/{}/{}Combined_plots_rc.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
+            #rcimages = ['/static/jobs/{}/{}Combined_plots_rc.png'.format(job_id, i) for i,j in sorted_mo if float(j)/peaks>0.1]
             metadata = {'filename': get_filename(async_id)}
         return jsonify(status=job.status,
                        job_id=job_id,
-                       motifs=images,
+                       motifs=motifs,
+                       images=images,
                        rcimages=rcimages,
                        motif_occurrences=dict(sorted_mo),
                        metadata=metadata,

@@ -62,8 +62,9 @@
                         $("#results").append("<div>Input: "+ xhr_data.metadata.filename +"</div>");
                         var index=0;
                         console.log(xhr_data.motif_occurrences);
-                        for(var motifkey in xhr_data.motifs){
-                            var url=xhr_data.motifs[motifkey];
+                        for(var m in xhr_data.motifs){
+                            var motifkey = xhr_data.motifs[m];
+                            var url=xhr_data.images[motifkey];
                             var rcurl=xhr_data.rcimages[motifkey];
                             var peaks = xhr_data.peaks;
                             var num_occur = xhr_data.motif_occurrences[motifkey];
