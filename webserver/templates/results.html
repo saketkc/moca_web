@@ -134,10 +134,14 @@
                 },
                 success: function(xhr_data) {
                 console.log(xhr_data);
+                if (xhr_data.status=="error"){
+                var str = "<br/><br/>Nothing found for " + content;
+                }
+                else{
                 var url = "/static/jobs/logos/"+xhr_data.path;
-                console.log(url);
                 var str= "<div class='panel-body'><img class='mainimage' src="+url+"/>"+
                 "</div>";
+                }
                 $(".jasparimage").html(str);
                 }
             });
