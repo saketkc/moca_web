@@ -303,7 +303,8 @@ def jasper_search(tf_name):
     for m in jaspar_motifs:
         if m.name.lower() == tf_name.lower():
             fn = os.path.join(STATIC_PATH, 'logos', m.name+'.png')
-            m.weblogo(fn,  show_errorbars=False, logo_title=m.name,  show_fineprint=False )
+            m.weblogo(fn,  show_errorbars=False, logo_title=m.name,  show_fineprint=False , symbols0='A', symbols1='T', symbols2='C', symbols3='G',
+                      color0='red', color1='green', color2='blue', color3='orange')
             return jsonify(path=m.name+'.png', status='success')
     return jsonify(status='error')
 
