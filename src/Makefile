@@ -1,6 +1,6 @@
 CC = g++
 
-CCFLAGS = -Wall -ansi -pedantic -O2 -std=c++11
+CCFLAGS = -Wall -ansi -pedantic -O2 -std=c++11 -lboost_system
 OBJECTS := $(patsubst %.cpp, %.o,$(wildcard *.cpp))
 
 COMMON_HEADERS = ./
