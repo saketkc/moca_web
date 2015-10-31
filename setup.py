@@ -118,6 +118,7 @@ def setup_moca():
                     extras_require = {
                         'webserver':  ['flask>=0.10'],
                     },
+                    scripts=['bin/calculate_site_conservation', 'bin/fimo_2_sites', 'bin/create_binary_from_wig', 'bin/extract_sequence_chunks_near_sites', 'bin/calculate_site_conservation_server'],
                     cmdclass={'build_py': BuildMocaUtilities}
                     )
     setup(**metadata)
