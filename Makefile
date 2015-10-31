@@ -9,7 +9,7 @@ all: progs
 SRC_DIR = ./moca/src/
 BIN_DIR = ./bin/
 BOOST_FLAGS = -lboost_date_time -lboost_filesystem -lboost_system -lboost_thread -lpthread
-LOCAL_DEPENDENCIES = params genome_table genome string_utils math_functions sequence_utility_functions
+LOCAL_DEPENDENCIES = params genome_table genome string_utils math_functions sequence_utility_functions thirdparty/INIReader thirdparty/ini
 
 LOCAL_TARGETS = extract_sequence_chunks_near_sites fimo_2_sites calculate_site_conservation create_binary_from_wig calculate_site_conservation_server
 LOCAL_DEP_OBJECTS = $(LOCAL_DEPENDENCIES:=.o)
@@ -68,7 +68,7 @@ create_binary_from_wig_objs = $(addprefix $(SRC_DIR), $(create_binary_from_wig_d
 create_binary_from_wig:
 	$(CC) -I$(SRC_DIR) $(CCFLAGS) $(create_binary_from_wig_objs) -o create_binary_from_wig
 
-calculate_site_conservation_server_deps = string_utils params genome_table math_functions calculate_site_conservation_server
+calculate_site_conservation_server_deps = string_utils params genome_table math_functions ini INIReader calculate_site_conservation_server
 calculate_site_conservation_server_objs = $(addprefix $(SRC_DIR), $(calculate_site_conservation_server_deps:=.o))
 calculate_site_conservation_server:
 	$(CC) -I$(SRC_DIR)  $(CCFLAGS) $(calculate_site_conservation_server_objs) -o calculate_site_conservation_server $(BOOST_FLAGS)

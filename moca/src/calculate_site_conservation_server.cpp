@@ -18,6 +18,7 @@
 #include "string_utils.h"
 #include "genome_table.h"
 #include "math_functions.h"
+#include "thirdparty/INIReader.h"
 
 using std::ifstream;
 using std::ofstream;
@@ -534,7 +535,20 @@ vector<string> determine_chr_to_read(vector<vector<genome_region> > & regions, g
 
 int main()
 {
+
     crow::SimpleApp app;
+    INIReader reader("/home/saket/application.cfg");
+    if (reader.ParseError() < 0) {
+                std::cout << "Can't load 'test.ini'\n";
+                        return 1;
+    }
+    std::set<std::string> sections = reader.GetSections();
+    //std::cout<<sections;
+    //
+    for (const std::string& person : sections)
+     {
+                  std::cout << person << ' ';
+     }
 
     CROW_ROUTE(app, "/")([](){
         return "Hello world";

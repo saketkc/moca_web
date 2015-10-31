@@ -3,6 +3,7 @@
 import os
 import re
 import subprocess
+import sys
 
 try:
     import setuptools
@@ -18,7 +19,11 @@ import setuptools.command.build_py
 class BuildMocaUtilities(setuptools.command.build_py.build_py):
     def run(self):
         cwd = os.getcwd()
-        subprocess.call('make', cwd=cwd)
+        run = subprocess.call('make', cwd=cwd)
+        if run!=0:
+            raise RuntimeError('Error compiling MoCA. Report upstream')
+            sys.exit(1)
+
         setuptools.command.build_py.build_py.run(self)
 
 
