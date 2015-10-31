@@ -11,7 +11,7 @@ except ImportError:
     from ez_setup import use_setuptools
     use_setuptools()
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 import setuptools.command.build_py
 #as build_py
 
@@ -44,8 +44,8 @@ with open('requirements.txt') as f:
 NAME                  = 'moca'
 MAINTAINER            = 'Saket Choudhary'
 MAINTAINER_EMAIL      = 'saketkc@gmail.com'
-DESCRIPTION           =  'MoCA: A tool for motif conservation analysis'
-LICENSE               = "Simplified BSD"
+DESCRIPTION           = 'MoCA: A tool for motif conservation analysis'
+LICENSE               = 'Simplified BSD'
 MAJOR                 = fversion[0]
 MINOR                 = fversion[1]
 MICRO                 = fversion[2]
@@ -58,7 +58,8 @@ AUTHOR                = 'Saket Choudhary'
 AUTHOR_EMAIL          = 'saketkc@gmail.com'
 PLATFORMS             = 'OS Independent'
 
-PACKAGE_DATA          = {'moca': ['data/pfm_vertebrates.txt']}
+PACKAGE_DATA          = {'': ['pfm_vertebrates.txt', '*.cfg']
+                         }
 
 PACKAGES = ['moca',
             'moca/webserver',
@@ -123,8 +124,9 @@ def setup_moca():
                     extras_require = {
                         'webserver':  ['flask>=0.10'],
                     },
+                    include_package_data = True,
                     scripts=['bin/calculate_site_conservation', 'bin/fimo_2_sites', 'bin/create_binary_from_wig', 'bin/extract_sequence_chunks_near_sites', 'bin/calculate_site_conservation_server'],
-                    cmdclass={'build_py': BuildMocaUtilities}
+                    cmdclass={'build_py': BuildMocaUtilities},
                     )
     setup(**metadata)
 
