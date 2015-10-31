@@ -46,7 +46,7 @@ bool operator==(const StringView& lhs, const string& rhs){
 
 bool operator==(const StringView& lhs, const StringView& rhs){
   if(lhs._length != rhs._length) return false;
-  
+
   if(lhs.ptrStr == rhs.ptrStr && lhs.begin == rhs.begin && lhs._length == rhs._length) return true;
 
   //lengths are the same
@@ -57,7 +57,7 @@ bool operator==(const StringView& lhs, const StringView& rhs){
 }
 
 bool operator<(const StringView& lhs, const StringView& rhs) {
-  string lhs_string = lhs.str(); 
+  string lhs_string = lhs.str();
   string rhs_string = rhs.str();
 
   return lhs_string < rhs_string;
@@ -69,24 +69,24 @@ std::vector<string> split(const string& inp_string, const string& regexp){
   std::vector<string> res;
   if(regexp[0] == '[' && regexp[regexp.length()-1] == ']'){
     //split by any character within []
-    
-    
+
+
     if(inp_string.length() == 0)  return res;
-    
+
     unsigned int last_i = 0;
     for(unsigned int i=0; i<inp_string.length(); i++){
       //if(inp_string.substr(i,sep.length()) == sep){
       if(inp_string[i] == sep){
-	if(i>last_i){ 
+	if(i>last_i){
 	  res.push_back(inp_string.substr(last_i, i-last_i));
 	}
 	last_i = i+1;
 	//}
       }
     }
-    if(last_i < inp_string.length()) 
+    if(last_i < inp_string.length())
       res.push_back(inp_string.substr(last_i, inp_string.length()-last_i));
-    
+
     if(res.size() == 0 && inp_string[0] != sep) res.push_back(inp_string);
   }
 
@@ -101,13 +101,13 @@ std::vector<string> split(const string& inp_string, char sep){
   unsigned int last_i = 0;
   for(unsigned int i=0; i<inp_string.length(); i++){
     if(inp_string[i] == sep){
-      if(i>last_i){ 
+      if(i>last_i){
 	res.push_back(inp_string.substr(last_i, i-last_i));
       }
       last_i = i+1;
     }
   }
-  if(last_i < inp_string.length()) 
+  if(last_i < inp_string.length())
     res.push_back(inp_string.substr(last_i, inp_string.length()-last_i));
 
   if(res.size() == 0 && inp_string[0] != sep) res.push_back(inp_string);
@@ -121,14 +121,14 @@ void split(const string& inp_string, char sep, vector<string>& res){
   unsigned int last_i = 0;
   for(unsigned int i=0; i<inp_string.length()/*-1*/; i++){
     if(inp_string[i] == sep){
-      if(i>last_i){ 
+      if(i>last_i){
 	res.push_back(inp_string.substr(last_i, i-last_i));
       }
       last_i = i+1;
       //}
     }
   }
-  if(last_i < inp_string.length()) 
+  if(last_i < inp_string.length())
     res.push_back(inp_string.substr(last_i, inp_string.length()-last_i));
 
   if(res.size() == 0 && inp_string[0] != sep) res.push_back(inp_string);
@@ -141,7 +141,7 @@ void split(string& inp_string, char sep, vector<StringView>& res){
   unsigned int last_i = 0;
   for(unsigned int i=0; i<inp_string.length()/*-1*/; i++){
     if(inp_string[i] == sep){
-      if(i>last_i){ 
+      if(i>last_i){
 	StringView stringView(inp_string, last_i, (int) i-last_i);
 	res.push_back(stringView);
       }
@@ -195,7 +195,7 @@ unsigned int get_string_count(std::ifstream& ifs){
   unsigned int string_counter = 0;
   while(ifs.good()){
     getline(ifs,dummy_string);
-    if(ifs.good()) string_counter++;    
+    if(ifs.good()) string_counter++;
   }
 
   ifs.clear();
@@ -213,7 +213,7 @@ void chomp(string& str){
     case char(10):{ str.erase(str.length()-1,1); break;}
     default:{ continue_chomp = false; break; }
     }
-  }  
+  }
 }
 
 
@@ -254,24 +254,24 @@ long long_k_pow(int k){
 
 std::string commify(int i){
   std::string res;
-  
+
   bool __continue = true;
   int cur_pow = 1; // power of 1000
 
   int prev_div = 0;
   while(__continue){
-    
+
     int cur_div = long_k_pow(cur_pow);
     if(i < cur_div){
       __continue = false;
     }
     int cur_num = (i%cur_div - prev_div ) / long_k_pow(cur_pow-1);
     std::stringstream tmp1;
-    tmp1<<cur_num;    
+    tmp1<<cur_num;
     std::string cur_num_string =tmp1.str();
-    
 
-    if(cur_pow > 1){      
+
+    if(cur_pow > 1){
       res = "," + res;
     }
     if(i>cur_div){ //there will be numbers in front, so ok to add zeroes
@@ -295,24 +295,24 @@ std::string commify(int i){
 
 std::string commify_long(long i){
   std::string res;
-  
+
   bool __continue = true;
   int cur_pow = 1; // power of 1000
 
   long prev_div = 0;
   while(__continue){
-    
+
     long cur_div = long_k_pow(cur_pow);
     if(i < cur_div){
       __continue = false;
     }
     long cur_num = (i%cur_div - prev_div ) / long_k_pow(cur_pow-1);
     std::stringstream tmp1;
-    tmp1<<cur_num;    
+    tmp1<<cur_num;
     std::string cur_num_string =tmp1.str();
-    
 
-    if(cur_pow > 1){      
+
+    if(cur_pow > 1){
       res = "," + res;
     }
     if(i>cur_div){ //there will be numbers in front, so ok to add zeroes
@@ -339,5 +339,5 @@ std::string int2string(int i){
   std::stringstream out;
   out<<i;
   s = out.str();
-  return s;  
+  return s;
 }

@@ -1,5 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
+#include <vector>
+#include <string>
+#include <iostream>
 
 class StringView{
  public:
@@ -23,7 +26,7 @@ class StringView{
   }
   //bool operator==(const char* str);
   //bool operator==(const StringView& rhs);
-  //bool operator <(StringView& rhs) const; 
+  //bool operator <(StringView& rhs) const;
 
   const char operator[](int i) const{ return (*ptrStr)[begin+i]; }
   const char at(int i) const;//{ assert(i<_length); return (*ptrStr)[begin+i]; }
@@ -54,5 +57,8 @@ bool operator==(const StringView& lhs, const StringView& rhs);
 bool operator==(const StringView& lhs, const char* rhs);
 bool operator==(const StringView& lhs, const std::string& rhs);
 bool operator<(const StringView& lhs, const StringView& rhs);
+int k_pow(int k);
+int long_k_pow(int k);
+
 
 #endif

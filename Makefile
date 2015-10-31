@@ -6,7 +6,7 @@ default: progs
 
 all: progs
 
-SRC_DIR = ./src/
+SRC_DIR = ./moca/src/
 BIN_DIR = ./bin/
 BOOST_FLAGS = -lboost_date_time -lboost_filesystem -lboost_system -lboost_thread -lpthread
 LOCAL_DEPENDENCIES = params genome_table genome string_utils math_functions sequence_utility_functions
