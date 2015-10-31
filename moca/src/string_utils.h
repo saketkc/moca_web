@@ -57,8 +57,6 @@ bool operator==(const StringView& lhs, const StringView& rhs);
 bool operator==(const StringView& lhs, const char* rhs);
 bool operator==(const StringView& lhs, const std::string& rhs);
 bool operator<(const StringView& lhs, const StringView& rhs);
-int k_pow(int k);
-int long_k_pow(int k);
 
 
 #endif

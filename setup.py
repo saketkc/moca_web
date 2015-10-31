@@ -2,6 +2,7 @@
 
 import os
 import re
+import subprocess
 
 try:
     import setuptools
@@ -10,13 +11,15 @@ except ImportError:
     use_setuptools()
 
 from setuptools import setup, Extension
-import setuptools.command.build_py as build_py
+import setuptools.command.build_py
+#as build_py
 
-import pkg_resources
 
-class BuildMocaUtilities(build_py):
+class BuildMocaUtilities(setuptools.command.build_py.build_py):
     def run(self):
-        self.run('make')
+        cwd = os.getcwd()
+        subprocess.call('make', cwd=cwd)
+        setuptools.command.build_py.build_py.run(self)
 
 
 
@@ -81,6 +84,7 @@ Operating System :: MacOS
 """
 
 EXTENSIONS = []
+"""
 EXTENSIONS.append(
     Extension('calculate_site_conservation',
               define_micros = [('VERSION', VERSION)],
@@ -91,7 +95,7 @@ EXTENSIONS.append(
 
                             )
                   )
-
+"""
 def setup_moca():
     metadata = dict(name=NAME,
                     maintainer=MAINTAINER,
@@ -113,7 +117,8 @@ def setup_moca():
                     ext_modules=EXTENSIONS,
                     extras_require = {
                         'webserver':  ['flask>=0.10'],
-                    }
+                    },
+                    cmdclass={'build_py': BuildMocaUtilities}
                     )
     setup(**metadata)
 
