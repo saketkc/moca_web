@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import os
 import re
 import subprocess
@@ -13,8 +12,6 @@ except ImportError:
 
 from setuptools import setup, Extension, find_packages
 import setuptools.command.build_py
-#as build_py
-
 
 class BuildMocaUtilities(setuptools.command.build_py.build_py):
     def run(self):
@@ -25,8 +22,6 @@ class BuildMocaUtilities(setuptools.command.build_py.build_py):
             sys.exit(1)
 
         setuptools.command.build_py.build_py.run(self)
-
-
 
 version_file = os.path.join('moca', 'version.py')
 fversion = None
@@ -90,18 +85,6 @@ Operating System :: MacOS
 """
 
 EXTENSIONS = []
-"""
-EXTENSIONS.append(
-    Extension('calculate_site_conservation',
-              define_micros = [('VERSION', VERSION)],
-              include_dirs = ['moca/src'],
-              extra_compile_args = ['-lboost_date_time', '-lboost_filesystem', '-lboost_system', '-lboost_thread', '-lpthread', '--std=c++11'],
-              sources=['moca/src/csc.i'],
-              swig_opts=['-c++']
-
-                            )
-                  )
-"""
 def setup_moca():
     metadata = dict(name=NAME,
                     maintainer=MAINTAINER,
