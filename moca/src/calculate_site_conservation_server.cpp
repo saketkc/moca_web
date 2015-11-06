@@ -543,11 +543,20 @@ int main()
                         return 1;
     }
     std::set<std::string> sections = reader.GetSections();
-    //std::cout<<sections;
-    //
-    for (const std::string& person : sections)
+    //i
+    const std::string genome = "genome";
+    for (const std::string& section : sections)
      {
-                  std::cout << person << ' ';
+         //std::cout << section << ' ' << std::endl;
+         if (strncmp(section.c_str(), genome.c_str(), strlen(genome.c_str()))==0){
+             std::set<std::string> fields = reader.GetFields(section);
+              for (const std::string& field : fields)
+              {
+                    std::cout << field << ' ' << std::endl;
+
+              }
+         }
+
      }
 
     CROW_ROUTE(app, "/")([](){
