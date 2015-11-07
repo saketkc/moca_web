@@ -19,6 +19,7 @@
 #include "genome_table.h"
 #include "math_functions.h"
 #include "thirdparty/INIReader.h"
+#include <map>
 
 using std::ifstream;
 using std::ofstream;
@@ -532,6 +533,10 @@ vector<string> determine_chr_to_read(vector<vector<genome_region> > & regions, g
   return 0;
 }*/
 
+bool ends_with(const string& a, const string& b) {
+    if (b.size() > a.size()) return false;
+    return std::equal(a.begin() + a.size() - b.size(), a.end(), b.begin());
+}
 
 int main()
 {
@@ -543,16 +548,30 @@ int main()
                         return 1;
     }
     std::set<std::string> sections = reader.GetSections();
-    //i
+    //vector<std::string> genomes;
+    //vector<std::ss
+    std::map<std::string, std::vector<std::string> > genomes_and_wigs;
     const std::string genome = "genome";
+    const std::string wig = "wig";
+    std::string path;
+
     for (const std::string& section : sections)
      {
-         //std::cout << section << ' ' << std::endl;
          if (strncmp(section.c_str(), genome.c_str(), strlen(genome.c_str()))==0){
              std::set<std::string> fields = reader.GetFields(section);
               for (const std::string& field : fields)
               {
+                  if (ends_with(field, wig)){
                     std::cout << field << ' ' << std::endl;
+                    path = reader.Get(section.c_str(), field.c_str(), "UNKNOWN");
+                    auto it = genomes_and_wigs.find(section.c_str());
+                    if (it == genomes_and_wigs.end()){
+                    std::vector<std::string>  v;
+                    genomes_and_wigs[section.c_str()] = v;
+                    }
+                     genomes_and_wigs[section.c_str()].push_back(path);
+                     std::cout<<path<<std::endl;
+                  }
 
               }
          }
