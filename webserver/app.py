@@ -12,7 +12,7 @@ from config_processor import read_config
 from encode_peak_file_downloader import get_encode_peakfiles, get_metadata_for_peakfile
 import subprocess
 from bed_operations.format_peakfile import convert_to_scorefile
-from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists, encode_job_status, get_encode_jobid
+from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists, encode_job_status, get_encode_jobid, is_job_type_encode,get_encode_from_jobid
 from database import SqlAlchemyTask
 import operator
 from Bio import motifs
@@ -214,8 +214,12 @@ def job_status(job_id):
         return jsonify(status='failure', message='Unable to locate job')
 
     async_id = get_async_id(job_id)
-    dataset_id = request.args.get('dataset_id')
-    peakfile_id = request.args.get('peakfile_id')
+    dataset_id = None #request.args.get('dataset_id')
+    peakfile_id = None # request.args.get('peakfile_id')
+    if is_job_type_encode(job_id):
+        data = get_encode_from_jobid(job_id)
+        dataset_id = data['dataset_id']
+        peakfile_id = data['peakfile_id']
     job_db = get_job_status(job_id)
     status = job_db['status']
     job = run_job.AsyncResult(async_id)
@@ -283,11 +287,15 @@ def encode():
             return json.dumps({'status': 'error', 'response': encode_peakfiles})
         return json.dumps({'peak_files': encode_peakfiles})
 
-
-@app.route('/encodejob/<dataset_id>/<peakfile_id>')
+@app.route('/encodejob/<dataset_id>/<peakfile_id>', methods=['GET', 'POST'])
 def encodejobs(dataset_id, peakfile_id):
     job_status = encode_job_status(peakfile_id)
     if job_status == 'success':
+        if request.method=='POST':
+            job_id = get_encode_jobid(peakfile_id)
+            return jsonify(job_id=job_id,
+                           dataset_id=dataset_id,
+                           peakfile_id=peakfile_id)
         summary = read_summary('encode/{}/{}'.format(dataset_id, peakfile_id))
         metadata = json.loads(get_encode_metadata(peakfile_id))
         motif_occurrences=summary['motif_occurrences']
@@ -300,11 +308,23 @@ def encodejobs(dataset_id, peakfile_id):
     elif job_status == 'pending':
         metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
         job_id = get_encode_jobid(peakfile_id)
-        return render_template('encoderesults.html', job_id=job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+        if request.method=='GET':
+            return render_template('encoderesults.html', job_id=job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+        else:
+            return jsonify(job_id=job_id,
+                           dataset_id=dataset_id,
+                           peakfile_id=peakfile_id)
     elif job_status == 'inexistent':
         metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
         job = process_job(request, metadata)
-        return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+        if request.method=='GET':
+            return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+        else:
+            return jsonify(job_id=job.job_id,
+                           dataset_id=dataset_id,
+                           peakfile_id=peakfile_id)
+
+
     elif job_status == 'error':
         return json.dumps({'status': 'error', 'response': metadata})
     #if type(metadata) == 'dict' and 'status' in metadata.keys():

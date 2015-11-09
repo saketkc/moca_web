@@ -71,6 +71,18 @@ def get_encode_jobid(peakfile_id):
     query = EncodeData.query.filter_by(peakfile_id=peakfile_id).first()
     return query.run_job_id
 
+def is_job_type_encode(job_id):
+    query = EncodeData.query.filter_by(run_job_id=job_id).first()
+    if query:
+        return True
+    return False
+
+def get_encode_from_jobid(job_id):
+    query = EncodeData.query.filter_by(run_job_id=job_id).first()
+    if query:
+        return {'dataset_id': query.dataset_id, 'peakfile_id': query.peakfile_id}
+    return None
+
 
 def get_job_id(async_id):
     query = Job.query.filter_by(async_id=async_id).first()
