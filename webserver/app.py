@@ -12,7 +12,7 @@ from config_processor import read_config
 from encode_peak_file_downloader import get_encode_peakfiles, get_metadata_for_peakfile
 import subprocess
 from bed_operations.format_peakfile import convert_to_scorefile
-from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists
+from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists, encode_job_status, get_encode_jobid
 from database import SqlAlchemyTask
 import operator
 from Bio import motifs
@@ -100,6 +100,10 @@ class ProcessJob(object):
         data = {'job_id': self.job_id, 'genome': self.genome, 'metadata': self.metadata}
         self.async_id = run_job.apply_async([data], )
         insert_new_job(self.job_id, self.async_id, self.filename, self.client_ip)
+        if self.metadata:
+            dataset_id = self.metadata['dataset']
+            peakfile_id = self.metadata['title']
+            insert_encode_job(peakfile_id, dataset_id, self.job_id, self.metadata)
 
 @celery.task(bind=True)
 def run_motif_analysis_job(self, data):
@@ -134,7 +138,7 @@ def run_job(self, data):
         print '**************UPDATE******************************'
         dataset_id = metadata['dataset']
         peakfile_id = metadata['title']
-        insert_encode_job(peakfile_id, dataset_id, job_id, metadata)
+        #insert_encode_job(peakfile_id, dataset_id, job_id, metadata)
         print '**************UPDATE******************************'
         post_process_encode_job(job_id, dataset_id, peakfile_id)
 
@@ -282,7 +286,8 @@ def encode():
 
 @app.route('/encodejob/<dataset_id>/<peakfile_id>')
 def encodejobs(dataset_id, peakfile_id):
-    if encode_job_exists(peakfile_id):
+    job_status = encode_job_status(peakfile_id)
+    if job_status == 'success':
         summary = read_summary('encode/{}/{}'.format(dataset_id, peakfile_id))
         metadata = json.loads(get_encode_metadata(peakfile_id))
         motif_occurrences=summary['motif_occurrences']
@@ -292,11 +297,20 @@ def encodejobs(dataset_id, peakfile_id):
         rcimages = {i:'/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
         data = ({'motifs':images, 'motif_occurrences': summary['motif_occurrences'], 'peaks': summary['peaks'], 'rcimages':rcimages })
         return render_template('encoderesults.html', job_id='none', data=data, metadata=(metadata))#motifs=images, motif_occurrences=summary['motif_occurrences'], peaks=summary['peaks'], job_id='none')
-    metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
-    if type(metadata) == 'dict' and 'status' in metadata.keys():
+    elif job_status == 'pending':
+        metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
+        job_id = get_encode_jobid(peakfile_id)
+        return render_template('encoderesults.html', job_id=job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+    elif job_status == 'inexistent':
+        metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)
+        job = process_job(request, metadata)
+        return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+    elif job_status == 'error':
         return json.dumps({'status': 'error', 'response': metadata})
-    job = process_job(request, metadata)
-    return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
+    #if type(metadata) == 'dict' and 'status' in metadata.keys():
+    #    return json.dumps({'status': 'error', 'response': metadata})
+    #job = process_job(request, metadata)
+    #return render_template('encoderesults.html', job_id=job.job_id, dataset_id=dataset_id, peakfile_id=peakfile_id, data=json.dumps({}), metadata=json.dumps(metadata))
 
 @app.route('/jaspar/<tf_name>')
 def jasper_search(tf_name):

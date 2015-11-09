@@ -58,6 +58,20 @@ def encode_job_exists(peakfile_id):
         return True
     return False
 
+def encode_job_status(peakfile_id):
+    query = EncodeData.query.filter_by(peakfile_id=peakfile_id).first()
+    if not query:
+        return 'inexistent'
+    job = Job.query.filter_by(job_id=query.run_job_id).first()
+    if job:
+        return job.status
+    return 'inexistent'
+
+def get_encode_jobid(peakfile_id):
+    query = EncodeData.query.filter_by(peakfile_id=peakfile_id).first()
+    return query.run_job_id
+
+
 def get_job_id(async_id):
     query = Job.query.filter_by(async_id=async_id).first()
     if query:
