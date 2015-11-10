@@ -12,7 +12,7 @@ from config_processor import read_config
 from encode_peak_file_downloader import get_encode_peakfiles, get_metadata_for_peakfile
 import subprocess
 from bed_operations.format_peakfile import convert_to_scorefile
-from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists, encode_job_status, get_encode_jobid, is_job_type_encode,get_encode_from_jobid
+from query import get_async_id, encode_job_exists, insert_encode_job, update_job_status, insert_new_job, get_encode_metadata, get_filename, get_job_status, job_exists, encode_job_status, get_encode_jobid, is_job_type_encode,get_encode_from_jobid, get_all_encode_results
 from database import SqlAlchemyTask
 import operator
 from Bio import motifs
@@ -206,6 +206,23 @@ def read_summary(job_id):
         data = json.load(data_file)
     return data
 
+@app.route('/encodeanalysis')
+def encode_analysis():
+    results = get_all_encode_results()
+    data = []
+    for result in results:
+        metadata = json.loads(result.encode_metadata)
+        obj = {'dataset_id':result.dataset_id,
+               'peakfile_id':result.peakfile_id,
+               'transcription_factor':metadata['gene_name'],
+               'technical_replicate':metadata['tech_repl_number'],
+               'biological_replicate':metadata['bio_repl_number'],
+               'file_type':metadata['file_type']
+               }
+        data.append(json.dumps(obj))
+    print len(data)
+    print data
+    return render_template('encodeanalysis.html', results=map(json.loads, data))
 
 @app.route('/status/<job_id>')
 def job_status(job_id):
@@ -291,11 +308,6 @@ def encode():
 def encodejobs(dataset_id, peakfile_id):
     job_status = encode_job_status(peakfile_id)
     if job_status == 'success':
-        if request.method=='POST':
-            job_id = get_encode_jobid(peakfile_id)
-            return jsonify(job_id=job_id,
-                           dataset_id=dataset_id,
-                           peakfile_id=peakfile_id)
         summary = read_summary('encode/{}/{}'.format(dataset_id, peakfile_id))
         metadata = json.loads(get_encode_metadata(peakfile_id))
         motif_occurrences=summary['motif_occurrences']
@@ -304,6 +316,12 @@ def encodejobs(dataset_id, peakfile_id):
         images = {i:'/static/jobs/encode/{}/{}/{}Combined_plots.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
         rcimages = {i:'/static/jobs/encode/{}/{}/{}Combined_plots_rc.png'.format(dataset_id, peakfile_id, i) for i,j in sorted_mo if float(j)/peaks>0.1}
         data = ({'motifs':images, 'motif_occurrences': summary['motif_occurrences'], 'peaks': summary['peaks'], 'rcimages':rcimages })
+        if request.method=='POST':
+            job_id = get_encode_jobid(peakfile_id)
+            return jsonify(job_id=job_id,
+                           dataset_id=dataset_id,
+                           peakfile_id=peakfile_id,
+                           data=data)
         return render_template('encoderesults.html', job_id='none', data=data, metadata=(metadata))#motifs=images, motif_occurrences=summary['motif_occurrences'], peaks=summary['peaks'], job_id='none')
     elif job_status == 'pending':
         metadata = get_metadata_for_peakfile(dataset_id, peakfile_id)

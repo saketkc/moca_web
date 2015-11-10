@@ -106,6 +106,10 @@ def get_encode_metadata(peakfile_id):
     query = EncodeData.query.filter_by(peakfile_id=peakfile_id).first()
     return query.encode_metadata
 
+def get_all_encode_results():
+    query = EncodeData.query.join(Job).filter(Job.status=='success').all()
+    return query
+
 def get_filename(async_id):
     query = Job.query.filter_by(async_id=async_id).first()
     if query:
