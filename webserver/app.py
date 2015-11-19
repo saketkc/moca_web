@@ -220,8 +220,6 @@ def encode_analysis():
                'file_type':metadata['file_type']
                }
         data.append(json.dumps(obj))
-    print len(data)
-    print data
     return render_template('encodeanalysis.html', results=map(json.loads, data))
 
 @app.route('/status/<job_id>')
