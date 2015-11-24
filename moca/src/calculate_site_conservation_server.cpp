@@ -551,17 +551,17 @@ int main()
     //vector<std::string> genomes;
     //vector<std::ss
     std::map<std::string, std::vector<std::string> > genomes_and_wigs;
-    const std::string genome = "genome";
-    const std::string wig = "wig";
+    const std::string genome_str = "genome";
+    const std::string wig_str = "wig";
     std::string path;
 
     for (const std::string& section : sections)
      {
-         if (strncmp(section.c_str(), genome.c_str(), strlen(genome.c_str()))==0){
+         if (strncmp(section.c_str(), genome_str.c_str(), strlen(genome.c_str()))==0){
              std::set<std::string> fields = reader.GetFields(section);
               for (const std::string& field : fields)
               {
-                  if (ends_with(field, wig)){
+                  if (ends_with(field, wig_str)){
                     std::cout << field << ' ' << std::endl;
                     path = reader.Get(section.c_str(), field.c_str(), "UNKNOWN");
                     auto it = genomes_and_wigs.find(section.c_str());
@@ -570,13 +570,16 @@ int main()
                     genomes_and_wigs[section.c_str()] = v;
                     }
                      genomes_and_wigs[section.c_str()].push_back(path);
-                     std::cout<<path<<std::endl;
                   }
 
               }
          }
 
      }
+
+    for (const std::string& genome : genomes_and_wigs){
+
+    }
 
     CROW_ROUTE(app, "/")([](){
         return "Hello world";
