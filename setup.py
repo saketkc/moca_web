@@ -108,8 +108,8 @@ def setup_moca():
                         'webserver':  ['flask>=0.10'],
                     },
                     include_package_data = True,
-                    scripts=['bin/calculate_site_conservation', 'bin/fimo_2_sites', 'bin/create_binary_from_wig', 'bin/extract_sequence_chunks_near_sites', 'bin/calculate_site_conservation_server'],
-                    cmdclass={'build_py': BuildMocaUtilities},
+                    #scripts=['bin/calculate_site_conservation', 'bin/fimo_2_sites', 'bin/create_binary_from_wig', 'bin/extract_sequence_chunks_near_sites', 'bin/calculate_site_conservation_server'],
+                    #cmdclass={'build_py': BuildMocaUtilities},
                     )
     setup(**metadata)
 
