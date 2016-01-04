@@ -13,16 +13,6 @@ except ImportError:
 from setuptools import setup, Extension, find_packages
 import setuptools.command.build_py
 
-class BuildMocaUtilities(setuptools.command.build_py.build_py):
-    def run(self):
-        cwd = os.getcwd()
-        run = subprocess.call('make', cwd=cwd)
-        if run!=0:
-            raise RuntimeError('Error compiling MoCA. Report upstream')
-            sys.exit(1)
-
-        setuptools.command.build_py.build_py.run(self)
-
 version_file = os.path.join('moca', 'version.py')
 fversion = None
 metadata = None
@@ -108,8 +98,7 @@ def setup_moca():
                         'webserver':  ['flask>=0.10'],
                     },
                     include_package_data = True,
-                    #scripts=['bin/calculate_site_conservation', 'bin/fimo_2_sites', 'bin/create_binary_from_wig', 'bin/extract_sequence_chunks_near_sites', 'bin/calculate_site_conservation_server'],
-                    #cmdclass={'build_py': BuildMocaUtilities},
+                    scripts=['scripts/moca_server', 'scripts/moca_pipeline']
                     )
     setup(**metadata)
 
