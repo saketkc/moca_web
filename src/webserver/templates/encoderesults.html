@@ -1,0 +1,226 @@
+{% extends "bootstrap.html" %}
+
+{% block content %} 
+
+<div class="row vertical-align">
+	<div class="col-md-8  vertical-align"><h2>Results</h2></div>
+	<div class="col-md-4"><a href="#" title="Print" id="print" class="hide glyphicon glyphicon-print pull-right"></a></div>
+</div>
+
+<div class="row">
+	
+	<br/>
+	<div id="spin"></div>
+</div>
+
+<div class="row hide" id="resultmetadata">
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Factor</b></div>
+		<div class="col-md-6" id="metadatafactor"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Assay</b></div>
+		<div class="col-md-6" id="metadataassay"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Biosample</b></div>
+		<div class="col-md-6" id="metadatabiosample"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Description</b></div>
+		<div class="col-md-6" id="metadatadesc"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Technical Replicate</b></div>
+		<div class="col-md-6" id="metadatatechrepl"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Biological Replicate</b></div>
+		<div class="col-md-6" id="metadatabiorepl"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Output type</b></div>
+		<div class="col-md-6" id="metadataoutputtype"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>File type</b></div>
+		<div class="col-md-6" id="metadatafiletype"></div>
+	</div>
+	
+	<div class="row">
+        <div class="col-md-4 col-md-offset-2"><b>Assembly</b></div>
+		<div class="col-md-6" id="metadataassembly"></div>
+	</div>
+	
+</div>
+
+
+<div id="results" class="hide">
+        
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/spin.min.js"></script>
+ 
+<script>
+var opts = {top:'35%', left:'80%', scale:0.5, position:'relative'};
+var spinner = new Spinner(opts).spin();
+$("#spin").html(spinner.el);
+function check_status(job_id, dataset_id, peakfile_id) {
+  $.ajax({
+    url: '/status/'+job_id,
+    dataType: 'json',
+    type: 'get',
+    data: {dataset_id: dataset_id, peakfile_id: peakfile_id},
+    error: function(xhr_data) {
+       $("#spin").html("Errored");
+    },
+    success: function(xhr_data) {
+      if (xhr_data.status == 'pending') {
+        // continue polling
+        setTimeout(function() { check_status(xhr_data.job_id, dataset_id, peakfile_id); }, 5000);
+      } 
+      else if (xhr_data.status == 'FAILURE'){
+		           $("#spin").html("Errored");
+
+	  }
+      else {        
+		  $("#results").toggleClass("hide");   
+		  //console.log(xhr_data);
+		  //console.log(xhr_data.metadata);
+		  var metadata = (xhr_data.metadata);
+		  //console.log(metadata);
+		  $("#resultmetadata").removeClass("hide");
+		  $("#metadatafactor").html(metadata.gene_name);
+          $("#metadataassay").html(metadata.assay_term_name);
+          $("#metadatadesc").html(metadata.description);
+          $("#metadatabiosample").html(metadata.biosample_term_name);
+          index=1;
+		  for(var motifkey in xhr_data.motifs){	
+			  //console.log(motifkey);
+			var url=xhr_data.motifs[motifkey];	  
+			var peaks = xhr_data.peaks;
+			var num_occur = xhr_data.motif_occurrences[motifkey];
+			var str="<div class='img-container'>"+
+				"<div class='panel panel-default'><div class='panel-heading clearfix' style='background: grey;'>"+
+				"<div class='img-text clearfix'><b>Motif "+(Math.floor(index)+1)+"</b>:&nbsp;&nbsp;"+ (Math.floor(num_occur)*100.0/Math.floor(peaks)).toFixed(2) +"% &nbsp;(" + num_occur+"/"+peaks+
+				")<a href='"+url+"' download class='link'>"+
+				"<span title='Download' class='glyphicon glyphicon-download-alt pull-right link' style='color: white;'></span></a></div></div>"+
+				"<div class='panel-body'><img height='180px' width='100%'  src="+url+"/></div></div></div>";
+			$("#results").append(str);
+			index+=1;
+		}
+		 $("#results").removeClass("hide"); 		 
+		 $("#print").removeClass("hide"); 
+
+		 $("#results").show();
+         $("#spin").html("");         
+     }   
+    },    
+    contentType: 'application/json'
+  });
+};
+
+var job_id = '{{ job_id }}';
+var dataset_id = '{{ dataset_id }}';
+var peakfile_id = '{{ peakfile_id }}';
+if (job_id!='none'){
+	function add_job_to_history(job_id){
+
+		if (localStorage["jobs"] == undefined){
+			//Create Job history queue
+			var jobs = [job_id];
+			localStorage["jobs"] = JSON.stringify(jobs);
+		}
+		else {
+			
+			var jobs =  JSON.parse(localStorage["jobs"]);
+			if(jobs.indexOf(job_id)==-1){
+				jobs.push(job_id);
+			}
+			localStorage["jobs"] = JSON.stringify(jobs);
+		}
+		
+	}
+	add_job_to_history(job_id);
+	check_status(job_id, dataset_id, peakfile_id);
+}
+else{
+	var data = '{{ data|tojson  }}';
+    var metadata = '{{ metadata|tojson }}';
+	console.log(data);
+
+	//data = JSON.stringify(data);
+	data = JSON.parse(data);
+
+	var motifs = data.motifs;
+	var motif_occurrences = data.motif_occurrences;
+	var peaks = data.peaks;
+	metadata = JSON.parse(metadata);
+    //console.log(metadata);
+    //console.log(data.motif_occurrences);
+	index=1;
+    for(var motifkey in data.motifs){	
+			  //console.log(motifkey);
+			var url=data.motifs[motifkey];	  
+			console.log(url);
+			var peaks = data.peaks;
+			var num_occur = data.motif_occurrences[motifkey];
+			var str="<div class='img-container'>"+
+				"<div class='panel panel-default'><div class='panel-heading clearfix' style='background: grey;'>"+
+				"<div class='img-text clearfix'><b>Motif "+(Math.floor(index))+"</b>:&nbsp;&nbsp;"+ (Math.floor(num_occur)*100.0/Math.floor(peaks)).toFixed(2) +"% &nbsp;(" + num_occur+"/"+peaks+
+				")<a href='"+url+"' download class='link'>"+
+				"<span title='Download' class='glyphicon glyphicon-download-alt pull-right link' style='color: white;'></span></a></div></div>"+
+				"<div class='panel-body'><img height='180px' width='100%' src="+url+" /></div></div></div>";
+			$("#results").append(str);
+			index+=1;
+		}
+		 $("#results").removeClass("hide"); 		 
+		 $("#print").removeClass("hide"); 
+
+		 $("#results").show();
+         $("#spin").html("");
+         $("#resultmetadata").removeClass("hide");
+         $("#metadatafactor").html(metadata.gene_name);
+         $("#metadataassay").html(metadata.assay_term_name);
+         $("#metadatadesc").html(metadata.description);
+         $("#metadatabiosample").html(metadata.biosample_term_name);
+         $("#metadatatechrepl").html(metadata.tech_repl_number);
+         $("#metadatabiorepl").html(metadata.bio_repl_number);
+         $("#metadatafiletype").html(metadata.file_type);
+         $("#metadataoutputtype").html(metadata.output_type);
+         $("#metadataassembly").html(metadata.assembly);
+
+         
+         
+         
+         
+         
+}
+$("#print").click(function(){
+	//window.print();
+	var content = $("#results").html();
+	
+	var w = window.open('', 'MoCA Results', 'height=400,width=600');
+	w.document.write('<html><head><title>MoCA Results</title>');
+	w.document.write('<link href="/static/css/bootstrap.min.css" rel="stylesheet" type="text/css">');
+	w.document.write('<link href="/static/css/print.css" rel="stylesheet" type="text/css" media="print">');
+	w.document.write('</head><body>');
+	w.document.write(content);
+    w.document.write('</body></html>');
+	w.print();
+	
+});
+
+</script>
+{% endblock %}
