@@ -13,7 +13,7 @@ except ImportError:
 from setuptools import setup, Extension, find_packages
 import setuptools.command.build_py
 
-version_file = os.path.join('moca', 'version.py')
+version_file = os.path.join('src', 'version.py')
 fversion = None
 metadata = None
 
@@ -25,7 +25,7 @@ fversion = metadata['version'].split('.')
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
-
+required = filter(lambda x: x[0]!='#', required)
 NAME                  = 'moca'
 MAINTAINER            = 'Saket Choudhary'
 MAINTAINER_EMAIL      = 'saketkc@gmail.com'
