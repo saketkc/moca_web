@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import os
 import re
-import subprocess
-import sys
 
 try:
     import setuptools
@@ -12,6 +10,7 @@ except ImportError:
 
 from setuptools import setup, Extension, find_packages
 import setuptools.command.build_py
+from pip.req import parse_requirements
 
 version_file = os.path.join('src', 'version.py')
 fversion = None
@@ -25,7 +24,9 @@ fversion = metadata['version'].split('.')
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
-required = filter(lambda x: x[0]!='#', required)
+
+#required = parse_requirements('requirements.txt')
+
 NAME                  = 'moca'
 MAINTAINER            = 'Saket Choudhary'
 MAINTAINER_EMAIL      = 'saketkc@gmail.com'
@@ -46,10 +47,8 @@ PLATFORMS             = 'OS Independent'
 PACKAGE_DATA          = {'': ['pfm_vertebrates.txt', '*.cfg']
                          }
 
-PACKAGES = ['moca',
-            'moca/webserver',
-            'moca/encode/',
-            'moca/src']
+PACKAGES = find_packages()
+print 'TEST: {}'.format(PACKAGES)
 REQUIRES = required
 CLASSIFIERS           = """\
 Development Status :: 4 - Beta
@@ -91,14 +90,13 @@ def setup_moca():
                     version=VERSION,
                     packages=PACKAGES,
                     package_data=PACKAGE_DATA,
-                    requires=REQUIRES,
                     install_requires=REQUIRES,
                     ext_modules=EXTENSIONS,
                     extras_require = {
                         'webserver':  ['flask>=0.10'],
                     },
                     include_package_data = True,
-                    scripts=['scripts/moca_server', 'scripts/moca_pipeline']
+                    #scripts=['scripts/moca_server', 'scripts/moca_pipeline']
                     )
     setup(**metadata)
 

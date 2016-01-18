@@ -1,1 +1,0 @@
-from .bedfilereader import BedfileReader

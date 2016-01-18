@@ -5,8 +5,13 @@ from ..helpers import exceptions
 import pandas
 from pybedtools import BedTool
 
+__BED_COLUMNS__ = ['chrom', 'chromStart', 'chromEnd',
+                   'name', 'score', 'strand',
+                   'signalValue', 'p-value', 'q-value']
 
-column_names = ['chrom', 'chromStart', 'chromEnd', 'name', 'score', 'strand', 'signalValue', 'p-value', 'q-value']
+__BED_TYPES__ = {10: 'narrowPeak',
+                 9: 'broadPeak',
+                 3: 'questPeak'}
 
 class Bedfile(object):
     """Class to crate a bed file object
@@ -81,3 +86,48 @@ class Bedfile(object):
             Fasta sequence combined
         """
         self.bed.sequence(fi=fasta_file)
+
+    def _read(self):
+        try:
+            self.bed_df = pandas.read_table(self.filepath,
+                                        header=None)
+        except Exception as e:
+            raise MocaException('Error reading bed file {}'.format(self.filepath),
+                                'Traceback: {}'.format(e))
+
+    def guess_bedformat(self):
+        """Method to guess bed format
+        Returns
+        -------
+        bed_format: string
+            BED format
+
+        Example:
+            >>> bed_df = Bedfile('file.bed')
+            >>> print(bed_df.guess_bed_format())
+
+        """
+        self.bed_columns = self.bed_df.columns
+        count = len(self.bed_columns)
+        try:
+            bed_format = __BED_TYPES__[count]
+        except KeyError:
+            raise MocaException('Bed file had {} columns. Supported column lengths are {}')
+        return bed_format
+
+    def sort_by(self, columns=None, ascending=False):
+        """Method to sort columns of bedfiles
+        Parameters
+        ----------
+        columns: list
+            list of column names to sort by
+        ascending: bool
+            Sort order(Default: true)
+
+        Returns
+        -------
+        sorted_bed_df: dataframe
+            dataframe with sorted columns
+        """
+        assert type(columns) is list
+        return self.bed_df.sort(columns, ascending)
