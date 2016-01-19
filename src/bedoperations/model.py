@@ -1,17 +1,22 @@
-#!/usr/bin/env python
-
 import os
-from ..helpers import exceptions
+from ..helpers import MocaException
 import pandas
 from pybedtools import BedTool
 
-__BED_COLUMNS__ = ['chrom', 'chromStart', 'chromEnd',
-                   'name', 'score', 'strand',
-                   'signalValue', 'p-value', 'q-value']
+__NARROWPEAK_COLUMNS__ = ['chrom', 'chromStart', 'chromEnd',
+                         'name', 'score', 'strand',
+                         'signalValue', 'p-value', 'q-value']
+
+__BROADPEAK_COLUMNS__ = ['chrom', 'chromStart', 'chromEnd',
+                         'name', 'score', 'strand',
+                         'signalValue', 'p-value', 'q-value', 'peak']
 
 __BED_TYPES__ = {10: 'narrowPeak',
                  9: 'broadPeak',
                  3: 'questPeak'}
+
+__BED_COLUMN_MAPPING__ = {9: __NARROWPEAK_COLUMNS__,
+                          10: __BROADPEAK_COLUMNS__}
 
 class Bedfile(object):
     """Class to crate a bed file object
@@ -27,65 +32,13 @@ class Bedfile(object):
         self.filepath = filepath
         self.bed_format = None
         if not os.path.isfile(filepath):
-            raise FileNotFoundError('Bed file {} not found'.format(filepath))
-        self.bed_format = self._guess_bed_format()
-        self.bed_sort()
-        self.bed = Bedtool(filepath)
+            raise MocaException('Bed file {} not found'.format(self.filepath))
+        self._read()
+        self.bed_format = self.guess_bedformat()
+        self.sort_bed()
+        self.bed = BedTool(filepath)
         self.genome_table = genome_table
         assert self.bed_Format is not None
-
-    def bed_sort(self):
-        self.bed_df.sort(columns=['scopre'], ascending=False)
-        filename, file_extension = os.path.splitext(self.filepath)
-        filename += '.sorted'
-        self.sorted_bed = filename+file_extension
-        self.bed_df.to_csv(filename+file_extension,
-                           sep='\t',
-                           columns=['chrom', 'peak_positions', 'score'],
-                           index=False,
-                           header=False)
-
-
-    def _guess_bed_format(self):
-        self.bed_df = pandas.read_table(self.filepath,
-                                   header=None)
-        self.bed_columns = self.bed_df.columns
-        cols = len(self.bed_columns)
-        if cols==10:
-            return 'narrowPeak'
-        elif cols==9:
-            return 'broadPeak'
-        elif cols==3:
-            return 'questPeak'
-        return 'unknown'
-
-
-    def bed_slop(self, flank_length=5):
-        """Add flanking sequences to bed file
-        Parameters
-        ----------
-        flank_length: int
-            the bed region is expanded in both direction by flank_length number of bases
-        Returns
-        -------
-        slop_bed: dataframe
-            Slopped bed data object
-        """
-        self.bed.slop(g=self.genome_table,
-                      b=flank_length
-                      )
-    def extract_fasta(self, fasta_file):
-        """Extract fasta of bed regions
-        Parameters
-        ----------
-        fasta_file: string
-            Absolute path to location of fasta file
-        Returns
-        -------
-        fasta: string
-            Fasta sequence combined
-        """
-        self.bed.sequence(fi=fasta_file)
 
     def _read(self):
         try:
@@ -114,6 +67,59 @@ class Bedfile(object):
         except KeyError:
             raise MocaException('Bed file had {} columns. Supported column lengths are {}')
         return bed_format
+
+    def slop_bed(self, flank_length=5):
+        """Add flanking sequences to bed file
+        Parameters
+        ----------
+        flank_length: int
+            the bed region is expanded in both direction by flank_length number of bases
+        Returns
+        -------
+        slop_bed: dataframe
+            Slopped bed data object
+        """
+        self.bed.slop(g=self.genome_table,
+                      b=flank_length
+                      )
+
+    def convert_to_scorefile(self):
+
+        """
+        filename, file_extension = os.path.splitext(self.filepath)
+        filename += '.sorted'
+        self.bed_df.to_csv(filename+file_extension,
+                           sep='\t',
+                           columns=['chrom', 'peak_positions', 'score'],
+                           index=False,
+                           header=False)
+        """
+    if filetype=='narrowPeak':
+        filter_df1 = df[df.peak.astype(int)==-1]
+        filter_df2 = df[df.peak.astype(int)!=-1]
+        filter_df1['peak_positions'] = (filter_df1['chromStart'].astype(int)+filter_df1['chromEnd'].astype(int))
+        filter_df1['peak_positions'] = [int(x/2) for x in filter_df1['peak_positions'].astype(int)]
+        filter_df2['peak_positions'] = filter_df2['chromStart'].astype(int)+filter_df2['peak'].astype(int)
+        df = pandas.concat([filter_df1, filter_df2])
+    else:
+        df['peak_positions'] = (df['chromStart']+df['chromEnd'])
+        df['peak_positions'] = [int(x/2) for x in df['peak_positions'].astype(int)]
+
+
+
+    def extract_fasta(self, fasta_file):
+        """Extract fasta of bed regions
+        Parameters
+        ----------
+        fasta_file: string
+            Absolute path to location of fasta file
+        Returns
+        -------
+        fasta: string
+            Fasta sequence combined
+        """
+        self.bed.sequence(fi=fasta_file)
+
 
     def sort_by(self, columns=None, ascending=False):
         """Method to sort columns of bedfiles
