@@ -48,7 +48,6 @@ PACKAGE_DATA          = {'': ['pfm_vertebrates.txt', '*.cfg']
                          }
 
 PACKAGES = find_packages()
-print 'TEST: {}'.format(PACKAGES)
 REQUIRES = required
 CLASSIFIERS           = """\
 Development Status :: 4 - Beta
