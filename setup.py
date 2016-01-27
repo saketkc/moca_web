@@ -47,7 +47,7 @@ PLATFORMS             = 'OS Independent'
 PACKAGE_DATA          = {'': ['pfm_vertebrates.txt', '*.cfg']
                          }
 
-PACKAGES = find_packages()
+PACKAGES = find_packages('src')
 REQUIRES = required
 CLASSIFIERS           = """\
 Development Status :: 4 - Beta
@@ -95,6 +95,7 @@ def setup_moca():
                         'webserver':  ['flask>=0.10'],
                     },
                     include_package_data = True,
+                    package_dir = {'': 'src'},
                     #scripts=['scripts/moca_server', 'scripts/moca_pipeline']
                     )
     setup(**metadata)
